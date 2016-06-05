@@ -1,5 +1,7 @@
 # Library Analysis Gradle Plugin
 
+[![](https://jitpack.io/v/znyang/library-analysis.svg)](https://jitpack.io/#znyang/library-analysis)
+
 ## 概述
 
 分析并统计依赖库文件的占用大小。
