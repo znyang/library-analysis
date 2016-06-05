@@ -1,0 +1,57 @@
+apply plugin: 'groovy'
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+group = GROUP
+version = VERSION_NAME
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+
+        groovy {
+            srcDir 'src/main/groovy'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile 'com.android.tools.build:gradle:1.5.0'
+    compile 'com.google.code.gson:gson:2.5'
+
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.12'
+    distributionUrl = 'http://services.gradle.org/distributions/gradle-2.12-all.zip'
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'groovydoc'
+    from 'build/docs/groovydoc'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+artifacts {
+    archives jar
+    archives groovydocJar
+    archives javadocJar
+}
+
+apply from: file('gradle/gradle-mvn-push.gradle')
