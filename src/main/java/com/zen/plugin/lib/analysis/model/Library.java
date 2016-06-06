@@ -4,8 +4,6 @@ import com.android.annotations.Nullable;
 import com.android.builder.dependency.JarDependency;
 import com.android.builder.dependency.LibraryDependency;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,13 +14,13 @@ import java.util.Set;
  * @version 2016/6/5
  */
 public class Library {
-    List<JarDependency>    mJarDependencies     = new ArrayList<>();
-    List<Library>          mLibraries           = new ArrayList<>();
-    Set<LibraryDependency> mDependencySet       = new HashSet<>();
+    List<JarDependency> mJarDependencies = new ArrayList<>();
+    List<Library> mLibraries = new ArrayList<>();
+    Set<LibraryDependency> mDependencySet = new HashSet<>();
     Set<LibraryDependency> mIgnoreDependencySet = new HashSet<>();
-    long                   mSize                = -1;
-    boolean                mIsLast              = true;
-    boolean                mIsIgnore            = false;
+    long mSize = -1;
+    boolean mIsLast = true;
+    boolean mIsIgnore = false;
     LibraryDependency mLibraryDependency;
 
     @Nullable
@@ -35,21 +33,27 @@ public class Library {
     }
 
     public void computeDependencies(boolean replay, List<String> ignore) {
+        computeDependencies(replay, ignore, false);
+    }
+
+    public void computeDependencies(boolean replay, List<String> ignore, boolean parentIgnore) {
         if (!mDependencySet.isEmpty() && !replay) {
             return;
         }
         if (mLibraryDependency != null) {
             String name = mLibraryDependency.getName();
-            if (mIsIgnore = checkIgnore(ignore, name)) {
+            if (mIsIgnore = parentIgnore | checkIgnore(ignore, name)) {
                 mIgnoreDependencySet.add(mLibraryDependency);
             } else {
                 mDependencySet.add(mLibraryDependency);
             }
         }
 
+        // 如果当前依赖库被忽略了，那么它所依赖的库也被忽略
+        Set<LibraryDependency> dependencies = mIsIgnore ? mIgnoreDependencySet : mDependencySet;
         for (Library lib : mLibraries) {
-            lib.computeDependencies(false, ignore);
-            mDependencySet.addAll(lib.mDependencySet);
+            lib.computeDependencies(false, ignore, mIsIgnore);
+            dependencies.addAll(lib.mDependencySet);
         }
 
         computeSize();

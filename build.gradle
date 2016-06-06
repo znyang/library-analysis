@@ -2,6 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 
 sourceCompatibility = 1.7
+javadoc.options.encoding = 'UTF-8'
 
 group = GROUP
 version = VERSION_NAME
@@ -35,7 +36,7 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.12'
-    distributionUrl = 'http://services.gradle.org/distributions/gradle-2.12-all.zip'
+    distributionUrl = 'http://services.gradle.org/distributions/gradle-2.10-all.zip'
 }
 
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
