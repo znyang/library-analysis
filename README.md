@@ -1,5 +1,7 @@
 # Library Analysis Gradle Plugin
 
+[![Build Status](https://travis-ci.org/znyang/library-analysis.svg?branch=master)](https://travis-ci
+.org/znyang/library-analysis)
 [![](https://jitpack.io/v/znyang/library-analysis.svg)](https://jitpack.io/#znyang/library-analysis)
 
 ## 概述
