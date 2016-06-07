@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/znyang/library-analysis.svg?branch=master)](https://travis-ci.org/znyang/library-analysis)
 [![](https://jitpack.io/v/znyang/library-analysis.svg)](https://jitpack.io/#znyang/library-analysis)
-[![codecov.io](https://codecov.io/github/znyang/library-analysis/coverage.svg?branch=feature-ut)](https://codecov.io/gh/znyang/library-analysis/branch/feature-ut)
+[![codecov.io](https://codecov.io/github/znyang/library-analysis/coverage.svg?branch=master)](https://codecov.io/gh/znyang/library-analysis/branch/master)
 
 ## 概述
 
