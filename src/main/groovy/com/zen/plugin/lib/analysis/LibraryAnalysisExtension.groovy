@@ -7,11 +7,17 @@ class LibraryAnalysisExtension {
 
     static final String ANALYSIS_OUTPUT_PATH = "report/zen/analysis/library";
     static final long DEFAULT_SIZE_LIMIT = 1024 * 1024;
+    static final long DEFAULT_FILE_SIZE_LIMIT = 100 * 1024;
 
     private boolean verbose
     private String outputPath = ANALYSIS_OUTPUT_PATH
     private List<String> ignore
     private long sizeLimit = DEFAULT_SIZE_LIMIT;
+    private long fileSizeLimit = DEFAULT_FILE_SIZE_LIMIT;
+
+    long getFileSizeLimit() {
+        return fileSizeLimit
+    }
 
     long getSizeLimit() {
         return sizeLimit
