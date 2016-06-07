@@ -4,6 +4,7 @@ import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.builder.dependency.JarDependency;
 import com.android.builder.dependency.LibraryDependency;
+import com.zen.plugin.lib.analysis.model.AarFile;
 import com.zen.plugin.lib.analysis.model.Library;
 
 import org.gradle.api.Action;
@@ -14,9 +15,12 @@ import org.gradle.logging.StyledTextOutput;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
 
 import static org.gradle.logging.StyledTextOutput.Style.Description;
+import static org.gradle.logging.StyledTextOutput.Style.Error;
 import static org.gradle.logging.StyledTextOutput.Style.Failure;
 import static org.gradle.logging.StyledTextOutput.Style.Identifier;
 import static org.gradle.logging.StyledTextOutput.Style.Info;
@@ -89,7 +93,7 @@ public class LibraryReportRenderer extends TextReportRenderer {
         getTextOutput().withStyle(Info).text("Dependencies size: " + FileUtils.convertFileSize(library.getSize()));
         getTextOutput().println();
 
-        renderChildren(library);
+        renderChildren(library, null);
     }
 
     @Override
@@ -102,16 +106,20 @@ public class LibraryReportRenderer extends TextReportRenderer {
         super.complete();
     }
 
-    private void renderChildren(@NonNull Library library) {
+    private void renderChildren(@NonNull Library library, File parentBundle) {
         renderer.startChildren();
+
 
         List<JarDependency> localJars = library.getJarDependencies();
         List<Library> libraries = library.getLibraries();
+        final boolean emptyChildren = libraries.isEmpty();
+        final int count = localJars == null ? 0 : localJars.size();
 
-        if (localJars != null) {
-            final boolean emptyChildren = libraries.isEmpty();
-            final int count = localJars.size();
+        if (parentBundle != null) {
+            renderAarLargeFiles(parentBundle, emptyChildren && count == 0);
+        }
 
+        if (count > 0) {
             int i = 0;
             for (JarDependency jarDependency : localJars) {
                 renderJarDependency(jarDependency, emptyChildren && i == count - 1);
@@ -119,37 +127,98 @@ public class LibraryReportRenderer extends TextReportRenderer {
             }
         }
 
-        final int count = libraries.size();
-        for (int i = 0; i < count; i++) {
+        final int librarySize = libraries.size();
+        for (int i = 0; i < librarySize; i++) {
             Library lib = libraries.get(i);
-            renderLibraryDependency(lib, i == count - 1);
+            renderLibraryDependency(lib, i == librarySize - 1);
         }
         renderer.completeChildren();
     }
 
 
-    private void renderLibraryDependency(final Library lib, boolean lastChild) {
+    private void renderLibraryDependency(final Library lib, final boolean lastChild) {
+        final List<File> bundleFiles = new ArrayList<>();
         renderer.visit(new Action<StyledTextOutput>() {
             @Override
             public void execute(StyledTextOutput styledTextOutput) {
-                LibraryDependency dependency = lib.getLibraryDependency();
                 String size = " unknown file";
                 boolean isLarge = false;
+
+                LibraryDependency dependency = lib.getLibraryDependency();
                 File bundle = dependency.getBundle();
+                String type = null;
+
                 if (bundle != null && bundle.exists()) {
                     long length = bundle.length();
+                    type = FileUtils.getFileType(bundle.getName());
                     isLarge = length >= extension.getSizeLimit();
-                    size = "@" + FileUtils.getFileType(bundle.getName()) + "(" + FileUtils.convertFileSize(length) +
+                    size = "@" + type + "(" + FileUtils.convertFileSize(length) +
                             ")";
+                    bundleFiles.add(bundle);
                 }
+
                 String total = lib.isIgnore() ? "ignore" : FileUtils.convertFileSize(lib.getSize());
+
                 getTextOutput().style(Info).text("[" + total + "]");
                 getTextOutput().style(Normal).text(" " + dependency.getName());
                 getTextOutput().style(isLarge ? Failure : Identifier).text(size);
             }
         }, lastChild);
 
-        renderChildren(lib);
+        renderChildren(lib, bundleFiles.isEmpty() ? null : bundleFiles.get(0));
+    }
+
+    private void renderAarLargeFiles(File bundle, boolean lastChild) {
+        String type = FileUtils.getFileType(bundle.getName());
+        if ("aar".equals(type)) {
+            try {
+                AarFile file = new AarFile(bundle);
+                List<ZipEntry> entries = file.getEntries();
+                List<ZipEntry> largeEntries = findLargeEntries(entries);
+
+                if (!largeEntries.isEmpty()) {
+                    final int size = largeEntries.size();
+                    renderer.visit(new Action<StyledTextOutput>() {
+                        @Override
+                        public void execute(StyledTextOutput styledTextOutput) {
+                            getTextOutput().style(Failure).text("Large Files: ");
+                        }
+                    }, lastChild);
+
+                    renderer.startChildren();
+                    for (int i = 0; i < size; i++) {
+                        showZipEntry(largeEntries.get(i), i == size - 1);
+                    }
+                    renderer.completeChildren();
+                }
+            } catch (IOException e) {
+                getTextOutput().style(Error).println(e);
+            }
+        }
+    }
+
+    private List<ZipEntry> findLargeEntries(List<ZipEntry> entries) {
+        List<ZipEntry> largeEntries = new ArrayList<>();
+
+        for (ZipEntry entry : entries) {
+            if (entry.getName().endsWith(".jar")) {
+                continue;
+            }
+            if (entry.getSize() >= extension.getFileSizeLimit()) {
+                largeEntries.add(entry);
+            }
+        }
+        return largeEntries;
+    }
+
+    private void showZipEntry(final ZipEntry entry, boolean lastChild) {
+        renderer.visit(new Action<StyledTextOutput>() {
+            @Override
+            public void execute(StyledTextOutput styledTextOutput) {
+                getTextOutput().style(Failure).text(entry.getName() + " - "
+                        + FileUtils.convertFileSize(entry.getSize()));
+            }
+        }, lastChild);
     }
 
     private void renderJarDependency(final JarDependency jar, boolean lastChild) {
