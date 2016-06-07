@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'java'
+apply from: "${rootDir}/jacoco.gradle"
 
 sourceCompatibility = 1.7
 javadoc.options.encoding = 'UTF-8'
