@@ -37,6 +37,4 @@ libReport {
 gradle libraryReportDebug
 ```
 
-output:
-
 ![screenshot](./image/screenshot.jpg)
