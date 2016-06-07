@@ -39,47 +39,4 @@ gradle libraryReportDebug
 
 output:
 
-```
-debug
-ignore - com.android.support:support-v4
-Dependencies size: 956 KB
-+--- [927 KB] com.android.support:appcompat-v7:23.3.0@aar(877 KB)
-|    +--- Large Files:
-|    |    \--- res/values/values.xml - 113 KB
-|    +--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-|    |    \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|    |         \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-|    +--- [49.753 KB] com.android.support:animated-vector-drawable:23.3.0@aar(11.348 KB)
-|    |    \--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-|    |         \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|    |              \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-|    \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|         \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-+--- [942 KB] sample-resource-conflict:library-b:unspecified@aar(14.726 KB)
-|    \--- [927 KB] com.android.support:appcompat-v7:23.3.0@aar(877 KB)
-|         +--- Large Files:
-|         |    \--- res/values/values.xml - 113 KB
-|         +--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-|         |    \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|         |         \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-|         +--- [49.753 KB] com.android.support:animated-vector-drawable:23.3.0@aar(11.348 KB)
-|         |    \--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-|         |         \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|         |              \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-|         \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-|              \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-\--- [941 KB] sample-resource-conflict:library-a:unspecified@aar(14.218 KB)
-     \--- [927 KB] com.android.support:appcompat-v7:23.3.0@aar(877 KB)
-          +--- Large Files:
-          |    \--- res/values/values.xml - 113 KB
-          +--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-          |    \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-          |         \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-          +--- [49.753 KB] com.android.support:animated-vector-drawable:23.3.0@aar(11.348 KB)
-          |    \--- [38.405 KB] com.android.support:support-vector-drawable:23.3.0@aar(38.405 KB)
-          |         \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-          |              \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-          \--- [ignore] com.android.support:support-v4:23.3.0@aar(1.169 MB)
-               \--- LOCAL: internal_impl-23.3.0.jar(315 KB)
-
-```
+![screenshot](./image/screenshot.jpg)
