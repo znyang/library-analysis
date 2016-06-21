@@ -151,7 +151,7 @@ public class LibraryReportRenderer extends TextReportRenderer {
                 if (bundle != null && bundle.exists()) {
                     long length = bundle.length();
                     type = FileUtils.getFileType(bundle.getName());
-                    isLarge = length >= extension.getSizeLimit();
+                    isLarge = length >= extension.limit.getLibSize();
                     size = "@" + type + "(" + FileUtils.convertFileSize(length) +
                             ")";
                     bundleFiles.add(bundle);
@@ -204,7 +204,7 @@ public class LibraryReportRenderer extends TextReportRenderer {
             if (entry.getName().endsWith(".jar")) {
                 continue;
             }
-            if (entry.getSize() >= extension.getFileSizeLimit()) {
+            if (entry.getSize() >= extension.limit.getFileSize()) {
                 largeEntries.add(entry);
             }
         }
@@ -230,7 +230,7 @@ public class LibraryReportRenderer extends TextReportRenderer {
                 File bundle = jar.getJarFile();
                 if (bundle != null && bundle.exists()) {
                     long length = bundle.length();
-                    isLarge = length > extension.getSizeLimit();
+                    isLarge = length > extension.limit.getLibSize();
                     size = "(" + FileUtils.convertFileSize(length) + ")";
                 }
                 getTextOutput().style(isLarge ? Failure : Identifier).text("LOCAL: " + jar.getJarFile().getName() + size);

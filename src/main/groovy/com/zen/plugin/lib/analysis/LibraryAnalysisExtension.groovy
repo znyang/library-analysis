@@ -1,4 +1,7 @@
 package com.zen.plugin.lib.analysis
+
+import org.gradle.util.ConfigureUtil
+
 /**
  * @author zen
  * @version 2016/5/29
@@ -6,25 +9,18 @@ package com.zen.plugin.lib.analysis
 class LibraryAnalysisExtension {
 
     static final String ANALYSIS_OUTPUT_PATH = "report/zen/analysis/library";
-    static final long DEFAULT_SIZE_LIMIT = 1024 * 1024;
-    static final long DEFAULT_FILE_SIZE_LIMIT = 100 * 1024;
 
     private boolean verbose
     private String outputPath = ANALYSIS_OUTPUT_PATH
     private List<String> ignore
-    private long sizeLimit = DEFAULT_SIZE_LIMIT;
-    private long fileSizeLimit = DEFAULT_FILE_SIZE_LIMIT;
+    public final LimitSizeConfig limit
 
-    long getFileSizeLimit() {
-        return fileSizeLimit
+    LibraryAnalysisExtension() {
+        limit = new LimitSizeConfig()
     }
 
-    long getSizeLimit() {
-        return sizeLimit
-    }
-
-    void setSizeLimit(long sizeLimit) {
-        this.sizeLimit = sizeLimit
+    void limit(Closure closure) {
+        ConfigureUtil.configure(closure, limit)
     }
 
     boolean getVerbose() {

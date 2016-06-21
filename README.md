@@ -16,15 +16,17 @@
 ```gradle
 buildscript {
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.0.1-beta4'
+        classpath 'com.github.znyang:library-analysis:0.0.1-beta5'
     }
 }
 
 apply plugin: 'com.zen.lib.analysis'
 
 libReport {
-    fileSizeLimit = 100 * 1024 // aar包中的文件比该数值大的将会被列出
-    sizeLimit = 1024 * 1024 // aar,jar文件超过该数值大小的会被红色标记
+    limit {
+        fileSize = 100 * 1024 // aar包中的文件比该数值大的将会被列出
+        libSize = 1024 * 1024 // aar,jar文件超过该数值大小的会被红色标记
+    }
     ignore = [
             "com.android.support:support-v4"
     ]
