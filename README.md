@@ -16,7 +16,7 @@
 ```gradle
 buildscript {
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.0.1-beta4'
+        classpath 'com.github.znyang:library-analysis:0.0.1-beta5'
     }
 }
 
