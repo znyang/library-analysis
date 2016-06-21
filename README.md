@@ -15,6 +15,10 @@
 
 ```gradle
 buildscript {
+    repositories {
+        // ...
+        maven { url "https://jitpack.io" }
+    }
     dependencies {
         classpath 'com.github.znyang:library-analysis:0.0.1-beta5'
     }
