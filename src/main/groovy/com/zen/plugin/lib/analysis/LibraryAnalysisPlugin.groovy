@@ -39,8 +39,6 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
             applyAndroid(project, (DomainObjectCollection<BaseVariant>) project.android.applicationVariants);
         } else if (project.plugins.hasPlugin('com.android.library')) {
             applyAndroid(project, (DomainObjectCollection<BaseVariant>) project.android.libraryVariants);
-        } else {
-            throw new IllegalArgumentException('Dexcount plugin requires the Android plugin to be configured');
         }
     }
 

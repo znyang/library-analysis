@@ -14,13 +14,34 @@ import java.util.Set;
  * @version 2016/6/5
  */
 public class Library {
+    /**
+     * 下级Jar依赖库
+     */
     List<JarDependency> mJarDependencies = new ArrayList<>();
+    /**
+     * 下级依赖库集合
+     */
     List<Library> mLibraries = new ArrayList<>();
+    /**
+     * 下级依赖库实例集合
+     */
     Set<LibraryDependency> mDependencySet = new HashSet<>();
+    /**
+     * 被忽略的依赖库
+     */
     Set<LibraryDependency> mIgnoreDependencySet = new HashSet<>();
+    /**
+     * 依赖库统计大小
+     */
     long mSize = -1;
     boolean mIsLast = true;
+    /**
+     * 当前库是否被忽略
+     */
     boolean mIsIgnore = false;
+    /**
+     * 当前库对应的依赖实例
+     */
     LibraryDependency mLibraryDependency;
 
     @Nullable
@@ -86,8 +107,8 @@ public class Library {
     public List<Library> getLibraries() {
         return mLibraries;
     }
-
     public long getSize() {
+
         return mSize;
     }
 
