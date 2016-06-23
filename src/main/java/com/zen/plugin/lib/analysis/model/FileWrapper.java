@@ -1,5 +1,6 @@
 package com.zen.plugin.lib.analysis.model;
 
+import com.android.annotations.NonNull;
 import com.android.builder.dependency.LibraryDependency;
 
 import java.util.zip.ZipEntry;
@@ -12,9 +13,17 @@ public class FileWrapper implements Comparable<FileWrapper> {
 
     private String mDependency;
     private String mFileName;
-    private long mSize;
+    private long   mSize;
 
-    public FileWrapper(LibraryDependency dependency, ZipEntry entry) {
+    public FileWrapper(LibraryDependency dependency) {
+        mDependency = dependency.getName();
+        mFileName = "aar";
+        if (dependency.getBundle() != null) {
+            mSize = dependency.getBundle().length();
+        }
+    }
+
+    public FileWrapper(LibraryDependency dependency,ZipEntry entry) {
         mDependency = dependency.getName();
         mFileName = entry.getName();
         mSize = entry.getSize();

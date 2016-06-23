@@ -8,8 +8,9 @@ import org.gradle.logging.StyledTextOutputFactory
 
 class LibraryDependencyReportTask extends DefaultTask {
 
-    private static final String FILE_LIBRARY_ANALYSIS = "libraryAnalysis.txt";
-    private static final String FILE_LARGE_FILE_REPORT = "largeFiles.md";
+    private static final String FILE_LIBRARY_ANALYSIS = "LibraryAnalysis.txt";
+    private static final String FILE_LARGE_FILE_REPORT = "LargeFiles.md";
+    private static final String FILE_DEPENDENCY_RANKING = "LibraryRanking.md";
 
     private BaseVariantData variant;
     private LibraryAnalysisExtension extension;
@@ -25,6 +26,7 @@ class LibraryDependencyReportTask extends DefaultTask {
         renderConsole(library)
         renderReportFile(library);
         renderLargeReportFile(library);
+        renderRankingReportFile(library);
     }
 
     private void renderConsole(Library library) {
@@ -46,7 +48,13 @@ class LibraryDependencyReportTask extends DefaultTask {
     private void renderLargeReportFile(Library library) {
         LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
         renderer.setOutputFile(prepareOutputFile(FILE_LARGE_FILE_REPORT));
-        renderer.render(library);
+        renderer.render(library.findAllLargeFileWrapper());
+    }
+
+    private void renderRankingReportFile(Library library) {
+        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_RANKING));
+        renderer.render(library.findAllDependencyWrapper());
     }
 
     private File prepareOutputFile(String fileName) {
