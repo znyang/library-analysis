@@ -5,16 +5,13 @@ import com.android.annotations.Nullable;
 import com.android.builder.dependency.JarDependency;
 import com.android.builder.dependency.LibraryDependency;
 import com.zen.plugin.lib.analysis.FileUtils;
-
-import org.jetbrains.annotations.NotNull;
+import com.zen.plugin.lib.analysis.comparator.MixedComparator;
+import com.zen.plugin.lib.analysis.comparator.SizeComparator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -126,7 +123,7 @@ public class Library {
     }
 
     public SortedSet<FileWrapper> findAllLargeFileWrapper() {
-        SortedSet<FileWrapper> set = new TreeSet<>();
+        SortedSet<FileWrapper> set = new TreeSet<>(new MixedComparator());
         for (ZipEntry entry : mLargeEntries) {
             set.add(new FileWrapper(mLibraryDependency, entry));
         }
@@ -137,7 +134,7 @@ public class Library {
     }
 
     public SortedSet<FileWrapper> findAllDependencyWrapper() {
-        SortedSet<FileWrapper> fileWrappers = new TreeSet<>();
+        SortedSet<FileWrapper> fileWrappers = new TreeSet<>(new SizeComparator());
         if (mLibraryDependency != null) {
             fileWrappers.add(new FileWrapper(mLibraryDependency));
         }

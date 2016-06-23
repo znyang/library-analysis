@@ -1,6 +1,5 @@
 package com.zen.plugin.lib.analysis.model;
 
-import com.android.annotations.NonNull;
 import com.android.builder.dependency.LibraryDependency;
 
 import java.util.zip.ZipEntry;
@@ -9,7 +8,7 @@ import java.util.zip.ZipEntry;
  * @author zen
  * @version 2016/6/22
  */
-public class FileWrapper implements Comparable<FileWrapper> {
+public class FileWrapper {
 
     private String mDependency;
     private String mFileName;
@@ -73,19 +72,6 @@ public class FileWrapper implements Comparable<FileWrapper> {
         result = 31 * result + (mFileName != null ? mFileName.hashCode() : 0);
         result = 31 * result + (int) (mSize ^ (mSize >>> 32));
         return result;
-    }
-
-    @Override
-    public int compareTo(FileWrapper o) {
-        if (o != null) {
-            long os = o.getSize();
-            if (getSize() < os) {
-                return 1;
-            } else if (getSize() == os) {
-                return 0;
-            }
-        }
-        return -1;
     }
 
 }
