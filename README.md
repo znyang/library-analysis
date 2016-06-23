@@ -43,4 +43,20 @@ libReport {
 gradle libraryReportDebug
 ```
 
+### output
+
 ![screenshot](./image/screenshot.jpg)
+
+### report
+
+**report/zen/analysis/library/debug/largeFiles.md**
+
+| Dependency | File | Size |
+| :--- | :--- | :--- |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/x86_64/libimagepipeline.so | 962 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/arm64-v8a/libimagepipeline.so | 910 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/x86/libimagepipeline.so | 549 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/x86_64/libgifimage.so | 487 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/x86_64/libwebpimage.so | 471 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/arm64-v8a/libgifimage.so | 471 KB |
+| com.facebook.fresco:imagepipeline:0.8.1 | jni/arm64-v8a/libwebpimage.so | 455 KB |

@@ -20,16 +20,17 @@ import java.util.List;
  */
 public final class VariantAnalysisHelper {
 
-    public Library analysis(BaseVariantData variantData, List<String> ignore) throws IOException {
+    public Library analysis(BaseVariantData variantData, List<String> ignore, long limitSize) throws IOException {
         List<LibraryDependency> libraries =
                 variantData.getVariantConfiguration().getDirectLibraries();
 
-        return doAnalysis(libraries, variantData.getVariantDependency().getLocalDependencies(), ignore);
+        return doAnalysis(libraries, variantData.getVariantDependency().getLocalDependencies(), ignore, limitSize);
     }
 
     Library doAnalysis(@NonNull List<LibraryDependency> libraries,
                        @Nullable List<JarDependency> localJars,
-                       List<String> ignore) {
+                       List<String> ignore,
+                       long limitSize) {
         if (libraries.isEmpty() && (localJars == null || localJars.isEmpty())) {
             return null;
         }
@@ -37,7 +38,7 @@ public final class VariantAnalysisHelper {
         Library library = new Library();
         analysisChildren(library, libraries, localJars);
         // analysis dependencies file size
-        library.computeDependencies(true, ignore);
+        library.computeDependencies(true, ignore, limitSize);
         return library;
     }
 

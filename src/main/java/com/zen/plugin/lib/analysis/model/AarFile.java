@@ -14,19 +14,35 @@ import java.util.zip.ZipFile;
  */
 public class AarFile {
 
-    ZipFile file;
-    List<ZipEntry> entries = new ArrayList<>();
+    final ZipFile mAarFile;
+    final List<ZipEntry> mEntries = new ArrayList<>();
 
     public AarFile(File aar) throws IOException {
-        file = new ZipFile(aar);
+        mAarFile = new ZipFile(aar);
     }
 
-    public List<ZipEntry> getEntries() {
-        if (entries.isEmpty()) {
-            entries.clear();
-            Enumeration<? extends ZipEntry> enumeration = file.entries();
+    public List<ZipEntry> getmEntries() {
+        if (mEntries.isEmpty()) {
+            mEntries.clear();
+            Enumeration<? extends ZipEntry> enumeration = mAarFile.entries();
             while (enumeration.hasMoreElements()) {
                 ZipEntry entry = enumeration.nextElement();
+                mEntries.add(entry);
+            }
+        }
+        return mEntries;
+    }
+
+    public List<ZipEntry> findLargeFiles(long limitSize) {
+        List<ZipEntry> entries = new ArrayList<>();
+        Enumeration<? extends ZipEntry> enumeration = mAarFile.entries();
+        while (enumeration.hasMoreElements()) {
+            ZipEntry entry = enumeration.nextElement();
+            // 忽略jar文件
+            if (entry.getName().endsWith(".jar")) {
+                continue;
+            }
+            if (entry.getSize() >= limitSize) {
                 entries.add(entry);
             }
         }
