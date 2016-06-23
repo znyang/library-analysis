@@ -8,6 +8,9 @@ import org.gradle.logging.StyledTextOutputFactory
 
 class LibraryDependencyReportTask extends DefaultTask {
 
+    private static final String FILE_LIBRARY_ANALYSIS = "libraryAnalysis.txt";
+    private static final String FILE_LARGE_FILE_REPORT = "largeFiles.md";
+
     private BaseVariantData variant;
     private LibraryAnalysisExtension extension;
 
@@ -17,13 +20,15 @@ class LibraryDependencyReportTask extends DefaultTask {
             return
         }
 
-        Library library = new VariantAnalysisHelper().analysis(variant, extension.ignore);
+        Library library = new VariantAnalysisHelper()
+                .analysis(variant, extension.ignore, extension.limit.getFileSize());
         renderConsole(library)
         renderReportFile(library);
+        renderLargeReportFile(library);
     }
 
     private void renderConsole(Library library) {
-        LibraryReportRenderer renderer = new LibraryReportRenderer();
+        LibraryAnalysisReportRenderer renderer = new LibraryAnalysisReportRenderer();
         renderer.setOutput(getServices().get(StyledTextOutputFactory.class).create(getClass()));
         renderer.setExtension(extension);
         renderer.startVariant(variant);
@@ -31,18 +36,24 @@ class LibraryDependencyReportTask extends DefaultTask {
     }
 
     private void renderReportFile(Library library) {
-        LibraryReportRenderer renderer = new LibraryReportRenderer();
+        LibraryAnalysisReportRenderer renderer = new LibraryAnalysisReportRenderer();
         renderer.setExtension(extension);
-        renderer.setOutputFile(prepareOutputFile());
+        renderer.setOutputFile(prepareOutputFile(FILE_LIBRARY_ANALYSIS));
         renderer.startVariant(variant);
         renderer.render(library);
     }
 
-    private File prepareOutputFile() {
+    private void renderLargeReportFile(Library library) {
+        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        renderer.setOutputFile(prepareOutputFile(FILE_LARGE_FILE_REPORT));
+        renderer.render(library);
+    }
+
+    private File prepareOutputFile(String fileName) {
         def path = "${project.buildDir}/" + extension.outputPath + "/${variant.name}"
         new File(path).mkdirs();
 
-        File analysisFile = new File(path, "libraryAnalysis.txt");
+        File analysisFile = new File(path, fileName);
         if (analysisFile.exists()) {
             analysisFile.delete();
         }

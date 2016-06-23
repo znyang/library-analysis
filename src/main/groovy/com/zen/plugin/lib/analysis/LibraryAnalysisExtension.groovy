@@ -9,11 +9,13 @@ import org.gradle.util.ConfigureUtil
 class LibraryAnalysisExtension {
 
     static final String ANALYSIS_OUTPUT_PATH = "report/zen/analysis/library";
+    private static final String STR_MARK = " <<<";
 
     private boolean verbose
     private String outputPath = ANALYSIS_OUTPUT_PATH
     private List<String> ignore
     public final LimitSizeConfig limit
+    private String mark = STR_MARK
 
     LibraryAnalysisExtension() {
         limit = new LimitSizeConfig()
@@ -21,6 +23,14 @@ class LibraryAnalysisExtension {
 
     void limit(Closure closure) {
         ConfigureUtil.configure(closure, limit)
+    }
+
+    String getMark() {
+        return mark
+    }
+
+    void setMark(String mark) {
+        this.mark = mark
     }
 
     boolean getVerbose() {
