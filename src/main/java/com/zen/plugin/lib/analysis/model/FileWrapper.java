@@ -8,13 +8,21 @@ import java.util.zip.ZipEntry;
  * @author zen
  * @version 2016/6/22
  */
-public class FileWrapper implements Comparable<FileWrapper> {
+public class FileWrapper {
 
     private String mDependency;
     private String mFileName;
-    private long mSize;
+    private long   mSize;
 
-    public FileWrapper(LibraryDependency dependency, ZipEntry entry) {
+    public FileWrapper(LibraryDependency dependency) {
+        mDependency = dependency.getName();
+        mFileName = "aar";
+        if (dependency.getBundle() != null) {
+            mSize = dependency.getBundle().length();
+        }
+    }
+
+    public FileWrapper(LibraryDependency dependency,ZipEntry entry) {
         mDependency = dependency.getName();
         mFileName = entry.getName();
         mSize = entry.getSize();
@@ -64,19 +72,6 @@ public class FileWrapper implements Comparable<FileWrapper> {
         result = 31 * result + (mFileName != null ? mFileName.hashCode() : 0);
         result = 31 * result + (int) (mSize ^ (mSize >>> 32));
         return result;
-    }
-
-    @Override
-    public int compareTo(FileWrapper o) {
-        if (o != null) {
-            long os = o.getSize();
-            if (getSize() < os) {
-                return 1;
-            } else if (getSize() == os) {
-                return 0;
-            }
-        }
-        return -1;
     }
 
 }

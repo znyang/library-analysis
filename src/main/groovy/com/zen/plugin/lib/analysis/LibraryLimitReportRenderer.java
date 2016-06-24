@@ -16,8 +16,7 @@ public class LibraryLimitReportRenderer extends TextReportRenderer {
 
     private static final String FORMAT_FILE_INFO = "| %s | %s | %s |";
 
-    public void render(final Library library) throws IOException {
-        SortedSet<FileWrapper> files = library.findAllLargeFileWrapper();
+    public void render(final SortedSet<FileWrapper> files) throws IOException {
         getTextOutput().println("| Dependency | File | Size |");
         getTextOutput().println("| :--- | :--- | :--- |");
         for (FileWrapper file : files) {
