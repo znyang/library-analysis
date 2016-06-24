@@ -20,8 +20,9 @@ public class LibraryLimitReportRenderer extends TextReportRenderer {
         getTextOutput().println("| Dependency | File | Size |");
         getTextOutput().println("| :--- | :--- | :--- |");
         for (FileWrapper file : files) {
+            String dependency = file.getDependency();
             getTextOutput().formatln(FORMAT_FILE_INFO,
-                    file.getDependency(), file.getFileName(),
+                    dependency, file.getFileName(),
                     FileUtils.convertFileSize(file.getSize()));
         }
     }

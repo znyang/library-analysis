@@ -5,6 +5,7 @@ import com.android.annotations.Nullable;
 import com.android.builder.dependency.JarDependency;
 import com.android.builder.dependency.LibraryDependency;
 import com.zen.plugin.lib.analysis.FileUtils;
+import com.zen.plugin.lib.analysis.comparator.FullSizeComparator;
 import com.zen.plugin.lib.analysis.comparator.MixedComparator;
 import com.zen.plugin.lib.analysis.comparator.SizeComparator;
 
@@ -26,15 +27,15 @@ public class Library {
     /**
      * 下级Jar依赖库
      */
-    List<JarDependency>    mJarDependencies     = new ArrayList<>();
+    List<JarDependency> mJarDependencies = new ArrayList<>();
     /**
      * 下级依赖库集合
      */
-    List<Library>          mLibraries           = new ArrayList<>();
+    List<Library> mLibraries = new ArrayList<>();
     /**
      * 下级依赖库实例集合（不含被忽略的部分）
      */
-    Set<LibraryDependency> mDependencySet       = new HashSet<>();
+    Set<LibraryDependency> mDependencySet = new HashSet<>();
     /**
      * 被忽略的依赖库
      */
@@ -42,12 +43,12 @@ public class Library {
     /**
      * 依赖库统计大小
      */
-    long                   mSize                = -1;
-    boolean                mIsLast              = true;
+    long mSize = -1;
+    boolean mIsLast = true;
     /**
      * 当前库是否被忽略
      */
-    boolean                mIsIgnore            = false;
+    boolean mIsIgnore = false;
     /**
      * 当前库对应的依赖实例
      */
@@ -133,15 +134,59 @@ public class Library {
         return set;
     }
 
-    public SortedSet<FileWrapper> findAllDependencyWrapper() {
+    /**
+     * aar大小的排序集合
+     *
+     * @return
+     */
+    public SortedSet<FileWrapper> findAllDependencyAarWrapper() {
         SortedSet<FileWrapper> fileWrappers = new TreeSet<>(new SizeComparator());
         if (mLibraryDependency != null) {
             fileWrappers.add(new FileWrapper(mLibraryDependency));
         }
         for (Library lib : mLibraries) {
+            fileWrappers.addAll(lib.findAllDependencyAarWrapper());
+        }
+        return fileWrappers;
+    }
+
+    /**
+     * 依赖库统计大小的排序集合
+     *
+     * @return
+     */
+    public SortedSet<FileWrapper> findAllDependencySizeWrapper() {
+        SortedSet<FileWrapper> fileWrappers = new TreeSet<>(new SizeComparator());
+        if (mLibraryDependency != null) {
+            fileWrappers.add(new FileWrapper(mLibraryDependency, getSize()));
+        }
+        for (Library lib : mLibraries) {
+            fileWrappers.addAll(lib.findAllDependencySizeWrapper());
+        }
+        return fileWrappers;
+    }
+
+    public SortedSet<DependencyWrapper> findAllDependencyWrapper() {
+        SortedSet<DependencyWrapper> fileWrappers = new TreeSet<>(new FullSizeComparator());
+        if (mLibraryDependency != null) {
+            fileWrappers.add(new DependencyWrapper(mLibraryDependency.getName(), getSize(),
+                    getLibraryDependencyBundleSize(mLibraryDependency)));
+        }
+        for (Library lib : mLibraries) {
             fileWrappers.addAll(lib.findAllDependencyWrapper());
         }
         return fileWrappers;
+    }
+
+    private static long getLibraryDependencyBundleSize(LibraryDependency dependency) {
+        if (dependency == null) {
+            return 0;
+        }
+        File bundle = dependency.getBundle();
+        if (bundle == null) {
+            return 0;
+        }
+        return bundle.length();
     }
 
     /**

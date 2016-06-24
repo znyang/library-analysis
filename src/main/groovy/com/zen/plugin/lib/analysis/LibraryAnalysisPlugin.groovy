@@ -26,6 +26,9 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
         sdkLocation = SdkResolver.resolve(project)
         project.extensions.create(EXTENSION_NAME, LibraryAnalysisExtension)
 
+        def task = project.tasks.create("libraryReportAll", LibraryAllDependencyTask)
+        task.group = 'Android'
+
         project.afterEvaluate {
             createTask(project)
         }

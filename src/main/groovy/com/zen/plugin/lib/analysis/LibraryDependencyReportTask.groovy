@@ -11,6 +11,8 @@ class LibraryDependencyReportTask extends DefaultTask {
     private static final String FILE_LIBRARY_ANALYSIS = "LibraryAnalysis.txt";
     private static final String FILE_LARGE_FILE_REPORT = "LargeFiles.md";
     private static final String FILE_DEPENDENCY_RANKING = "LibraryRanking.md";
+    private static final String FILE_DEPENDENCY_STATISTICS_RANKING = "LibraryStatisticsRanking.md";
+    private static final String FILE_DEPENDENCY_CSV = "LibraryStatistics.csv";
 
     private BaseVariantData variant;
     private LibraryAnalysisExtension extension;
@@ -27,6 +29,8 @@ class LibraryDependencyReportTask extends DefaultTask {
         renderReportFile(library);
         renderLargeReportFile(library);
         renderRankingReportFile(library);
+//        renderStatisticsRankingReportFile(library);
+        renderStatisticsCsvReportFile(library);
     }
 
     private void renderConsole(Library library) {
@@ -54,6 +58,18 @@ class LibraryDependencyReportTask extends DefaultTask {
     private void renderRankingReportFile(Library library) {
         LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
         renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_RANKING));
+        renderer.render(library.findAllDependencyAarWrapper());
+    }
+
+    private void renderStatisticsRankingReportFile(Library library) {
+        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_STATISTICS_RANKING));
+        renderer.render(library.findAllDependencySizeWrapper());
+    }
+
+    private void renderStatisticsCsvReportFile(Library library) {
+        LibraryCsvReportRenderer renderer = new LibraryCsvReportRenderer();
+        renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_CSV));
         renderer.render(library.findAllDependencyWrapper());
     }
 

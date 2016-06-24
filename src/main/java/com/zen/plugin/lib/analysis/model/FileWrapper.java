@@ -12,7 +12,7 @@ public class FileWrapper {
 
     private String mDependency;
     private String mFileName;
-    private long   mSize;
+    private long mSize;
 
     public FileWrapper(LibraryDependency dependency) {
         mDependency = dependency.getName();
@@ -22,10 +22,16 @@ public class FileWrapper {
         }
     }
 
-    public FileWrapper(LibraryDependency dependency,ZipEntry entry) {
+    public FileWrapper(LibraryDependency dependency, ZipEntry entry) {
         mDependency = dependency.getName();
         mFileName = entry.getName();
         mSize = entry.getSize();
+    }
+
+    public FileWrapper(LibraryDependency dependency, long size) {
+        mDependency = dependency.getName();
+        mFileName = "all";
+        mSize = size;
     }
 
     public String getDependency() {
