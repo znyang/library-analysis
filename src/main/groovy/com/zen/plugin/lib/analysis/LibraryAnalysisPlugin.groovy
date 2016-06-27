@@ -4,10 +4,13 @@ import com.android.annotations.Nullable
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.zen.plugin.lib.analysis.full.LibraryFullDependencyTask
 import com.zen.plugin.lib.analysis.sdk.SdkResolver
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
 
 import java.lang.reflect.Method
 
@@ -25,9 +28,6 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
         // 通过项目对象找到本地配置文件
         sdkLocation = SdkResolver.resolve(project)
         project.extensions.create(EXTENSION_NAME, LibraryAnalysisExtension)
-
-        def task = project.tasks.create("libraryReportAll", LibraryAllDependencyTask)
-        task.group = 'Android'
 
         project.afterEvaluate {
             createTask(project)
@@ -48,21 +48,28 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
     private static void applyAndroid(Project project,
                                      DomainObjectCollection<BaseVariant> variants) {
         variants.all { variant ->
-            // outputs就是构建结束后的文件，aar or apk
-            variant.outputs.each { output ->
-                // 变种版本名
-                def slug = variant.name.capitalize()
-                if (variant.outputs.size() > 1) {
-                    slug += output.name.capitalize()
-                }
+            // 变种版本名
+            def slug = variant.name.capitalize()
 
-                // 创建Task
-                def task = project.tasks.create("libraryReport${slug}", LibraryDependencyReportTask)
-                task.description = "Outputs dependents data for ${variant.name}."
-                task.group = 'Android'
-                task.variant = getVariantData(variant)
-                task.extension = project.extensions[EXTENSION_NAME] as LibraryAnalysisExtension
-            }
+            // 创建Task
+            def task = project.tasks.create("libraryReport${slug}", LibraryDependencyReportTask)
+            task.description = "Outputs dependents data for ${variant.name}."
+            task.group = 'Android'
+            task.variant = getVariantData(variant)
+            task.extension = project.extensions[EXTENSION_NAME] as LibraryAnalysisExtension
+        }
+
+        ConfigurationContainer configurationContainer = project.getConfigurations();
+        Set<Configuration> set = configurationContainer.findAll { conf ->
+            String name = conf.getName()
+            name.contains("compile") || name.contains("Compile")
+        }
+
+        for (Configuration configuration : set) {
+            def conf = configuration.getName();
+            def task = project.tasks.create("libraryReport_${conf}", LibraryFullDependencyTask)
+            task.configuration = conf
+            task.group = "Report"
         }
     }
 
