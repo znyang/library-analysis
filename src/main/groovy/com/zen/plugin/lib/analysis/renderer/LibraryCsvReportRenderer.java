@@ -1,4 +1,4 @@
-package com.zen.plugin.lib.analysis;
+package com.zen.plugin.lib.analysis.renderer;
 
 import com.zen.plugin.lib.analysis.model.DependencyWrapper;
 import com.zen.plugin.lib.analysis.model.FileWrapper;

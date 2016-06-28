@@ -1,7 +1,12 @@
-package com.zen.plugin.lib.analysis
+package com.zen.plugin.lib.analysis.task
 
 import com.android.build.gradle.internal.variant.BaseVariantData
+import com.zen.plugin.lib.analysis.VariantAnalysisHelper
+import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.model.Library
+import com.zen.plugin.lib.analysis.renderer.LibraryAnalysisReportRenderer
+import com.zen.plugin.lib.analysis.renderer.LibraryCsvReportRenderer
+import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.logging.StyledTextOutputFactory
@@ -23,8 +28,7 @@ class LibraryDependencyReportTask extends DefaultTask {
             return
         }
 
-        Library library = new VariantAnalysisHelper()
-                .analysis(variant, extension.ignore, extension.limit.getFileSize());
+        Library library = VariantAnalysisHelper.analysis(variant, extension.ignore, extension.limit.getFileSize());
         renderConsole(library)
         renderReportFile(library);
         renderLargeReportFile(library);
@@ -50,19 +54,19 @@ class LibraryDependencyReportTask extends DefaultTask {
     }
 
     private void renderLargeReportFile(Library library) {
-        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        LibraryMdReportRenderer renderer = new LibraryMdReportRenderer();
         renderer.setOutputFile(prepareOutputFile(FILE_LARGE_FILE_REPORT));
         renderer.render(library.findAllLargeFileWrapper());
     }
 
     private void renderRankingReportFile(Library library) {
-        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        LibraryMdReportRenderer renderer = new LibraryMdReportRenderer();
         renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_RANKING));
         renderer.render(library.findAllDependencyAarWrapper());
     }
 
     private void renderStatisticsRankingReportFile(Library library) {
-        LibraryLimitReportRenderer renderer = new LibraryLimitReportRenderer();
+        LibraryMdReportRenderer renderer = new LibraryMdReportRenderer();
         renderer.setOutputFile(prepareOutputFile(FILE_DEPENDENCY_STATISTICS_RANKING));
         renderer.render(library.findAllDependencySizeWrapper());
     }

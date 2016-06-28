@@ -1,5 +1,6 @@
-package com.zen.plugin.lib.analysis;
+package com.zen.plugin.lib.analysis.renderer;
 
+import com.zen.plugin.lib.analysis.FileUtils;
 import com.zen.plugin.lib.analysis.model.FileWrapper;
 import com.zen.plugin.lib.analysis.model.Library;
 
@@ -12,7 +13,7 @@ import java.util.SortedSet;
  * @author zen
  * @version 2016/6/4
  */
-public class LibraryLimitReportRenderer extends TextReportRenderer {
+public class LibraryMdReportRenderer extends TextReportRenderer {
 
     private static final String FORMAT_FILE_INFO = "| %s | %s | %s |";
 

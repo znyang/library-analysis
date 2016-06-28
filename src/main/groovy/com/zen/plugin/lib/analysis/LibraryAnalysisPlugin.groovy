@@ -4,7 +4,9 @@ import com.android.annotations.Nullable
 import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.variant.BaseVariantData
-import com.zen.plugin.lib.analysis.full.LibraryFullDependencyTask
+import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.task.LibraryDependencyReportTask
+import com.zen.plugin.lib.analysis.task.LibraryFullDependencyTask
 import com.zen.plugin.lib.analysis.sdk.SdkResolver
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
@@ -70,6 +72,7 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
             def task = project.tasks.create("libraryReport_${conf}", LibraryFullDependencyTask)
             task.configuration = conf
             task.group = "Report"
+            task.extension = project.extensions[EXTENSION_NAME] as LibraryAnalysisExtension
         }
     }
 
