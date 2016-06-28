@@ -1,29 +1,28 @@
-package com.zen.plugin.lib.analysis.full;
+package com.zen.plugin.lib.analysis.task
+
+import com.zen.plugin.lib.analysis.VariantAnalysisHelper;
 
 
 //import com.android.build.gradle.internal.tasks.DependencyReportTask;
-
-import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
-import org.gradle.api.internal.tasks.options.Option;
-import org.gradle.api.tasks.diagnostics.AbstractReportTask;
-import org.gradle.api.tasks.diagnostics.internal.DependencyReportRenderer;
-import org.gradle.api.tasks.diagnostics.internal.ReportRenderer;
-import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer;
-
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.log.ILog
+import com.zen.plugin.lib.analysis.log.Logger
+import com.zen.plugin.lib.analysis.renderer.LogReportRenderer
+import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.internal.tasks.options.Option
+import org.gradle.api.tasks.diagnostics.AbstractReportTask
+import org.gradle.api.tasks.diagnostics.internal.DependencyReportRenderer
+import org.gradle.api.tasks.diagnostics.internal.ReportRenderer
+import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer
 
 public class LibraryFullDependencyTask extends AbstractReportTask {
 
     private DependencyReportRenderer renderer = new AsciiDependencyReportRenderer();
 
-    private Set<Configuration> configurations;
+    private Set<Configuration>       configurations;
+    private LibraryAnalysisExtension extension;
 
     public ReportRenderer getRenderer() {
         return renderer;
@@ -43,11 +42,30 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
             }
         });
         sortedConfigurations.addAll(getReportConfigurations());
+
+        ILog logger = Logger.getInstance();
         for (Configuration configuration : sortedConfigurations) {
             renderer.startConfiguration(configuration);
             renderer.render(configuration);
             renderer.completeConfiguration(configuration);
+
+            VariantAnalysisHelper.analysis(configuration, logger);
         }
+
+        LogReportRenderer logRenderer = new LogReportRenderer();
+        File logFile = prepareOutputFile("log.txt");
+        if (logFile != null) {
+            logRenderer.setOutputFile(logFile);
+            logRenderer.renderLog(logger);
+        }
+    }
+
+    public LibraryAnalysisExtension getExtension() {
+        return extension;
+    }
+
+    public void setExtension(LibraryAnalysisExtension extension) {
+        this.extension = extension;
     }
 
     private Set<Configuration> getReportConfigurations() {
@@ -84,7 +102,19 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
     }
 
     public ConfigurationContainer getTaskConfigurations() {
-        return  getProject().getConfigurations();
+        return getProject().getConfigurations();
+    }
+
+    private File prepareOutputFile(String fileName) {
+        def path = "${project.buildDir}/" + extension.outputPath + "/${configurations.name}"
+        new File(path).mkdirs();
+
+        File analysisFile = new File(path, fileName);
+        if (analysisFile.exists()) {
+            analysisFile.delete()
+        }
+        analysisFile.createNewFile()
+        analysisFile
     }
 
 }
