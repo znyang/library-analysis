@@ -5,6 +5,8 @@ import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.internal.api.BaseVariantImpl
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.log.Logger
+import com.zen.plugin.lib.analysis.log.LogReportRenderer
 import com.zen.plugin.lib.analysis.task.LibraryDependencyReportTask
 import com.zen.plugin.lib.analysis.task.LibraryFullDependencyTask
 import com.zen.plugin.lib.analysis.sdk.SdkResolver
@@ -12,7 +14,6 @@ import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.ConfigurationContainer
 
 import java.lang.reflect.Method
 
@@ -49,19 +50,27 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
 
     private static void applyAndroid(Project project,
                                      DomainObjectCollection<BaseVariant> variants) {
+        def configurationContainer = project.configurations
+        def extension = project.extensions[EXTENSION_NAME] as LibraryAnalysisExtension
+        def logger = new Logger()
+
         variants.all { variant ->
             // 变种版本名
             def slug = variant.name.capitalize()
 
+            logger.d("variant:" + variant.name)
+
             // 创建Task
             def task = project.tasks.create("libraryReport${slug}", LibraryDependencyReportTask)
             task.description = "Outputs dependents data for ${variant.name}."
-            task.group = 'Android'
+            task.group = 'Report'
             task.variant = getVariantData(variant)
-            task.extension = project.extensions[EXTENSION_NAME] as LibraryAnalysisExtension
+            task.extension = extension
+            task.configuration = configurationContainer.findByName(variant.name + "Compile")
         }
+        new LogReportRenderer("CreateTasks.log", "${project.buildDir}/${extension.outputPath}")
+                .renderLog(logger)
 
-        ConfigurationContainer configurationContainer = project.getConfigurations();
         Set<Configuration> set = configurationContainer.findAll { conf ->
             String name = conf.getName()
             name.contains("compile") || name.contains("Compile")

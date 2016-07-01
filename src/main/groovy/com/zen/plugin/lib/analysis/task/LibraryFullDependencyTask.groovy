@@ -7,7 +7,9 @@ import com.zen.plugin.lib.analysis.VariantAnalysisHelper;
 import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.log.ILog
 import com.zen.plugin.lib.analysis.log.Logger
-import com.zen.plugin.lib.analysis.renderer.LogReportRenderer
+import com.zen.plugin.lib.analysis.log.LogReportRenderer
+import com.zen.plugin.lib.analysis.model.FileWrapper
+import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
@@ -21,7 +23,7 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
 
     private DependencyReportRenderer renderer = new AsciiDependencyReportRenderer();
 
-    private Set<Configuration>       configurations;
+    private Set<Configuration> configurations;
     private LibraryAnalysisExtension extension;
 
     public ReportRenderer getRenderer() {
@@ -43,21 +45,23 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
         });
         sortedConfigurations.addAll(getReportConfigurations());
 
-        ILog logger = Logger.getInstance();
+        ILog logger = new Logger();
         for (Configuration configuration : sortedConfigurations) {
             renderer.startConfiguration(configuration);
             renderer.render(configuration);
             renderer.completeConfiguration(configuration);
 
-            VariantAnalysisHelper.analysis(configuration, logger);
+            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(configuration, logger)
+            renderAllJarFiles(wrappers)
         }
 
-        LogReportRenderer logRenderer = new LogReportRenderer();
-        File logFile = prepareOutputFile("log.txt");
-        if (logFile != null) {
-            logRenderer.setOutputFile(logFile);
-            logRenderer.renderLog(logger);
-        }
+        new LogReportRenderer("FullDependencyTask.log", "${project.buildDir}/" + extension.outputPath).renderLog(logger);
+    }
+
+    private void renderAllJarFiles(SortedSet<FileWrapper> wrappers) {
+        LibraryMdReportRenderer renderer = new LibraryMdReportRenderer()
+        renderer.setOutputFile(prepareOutputFile("SortAllJarFiles.md"))
+        renderer.renderOnlyFileName(wrappers)
     }
 
     public LibraryAnalysisExtension getExtension() {

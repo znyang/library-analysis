@@ -14,9 +14,19 @@ public class FileWrapper {
     private String mFileName;
     private long mSize;
 
+    public FileWrapper(String dependency, String fileName, long size) {
+        mDependency = dependency;
+        mFileName = fileName;
+        mSize = size;
+    }
+
     public FileWrapper(LibraryDependency dependency) {
         mDependency = dependency.getName();
-        mFileName = "aar";
+        if (dependency.getBundle() != null) {
+            mFileName = dependency.getBundle().getName();
+        } else {
+            mFileName = "EMPTY";
+        }
         if (dependency.getBundle() != null) {
             mSize = dependency.getBundle().length();
         }

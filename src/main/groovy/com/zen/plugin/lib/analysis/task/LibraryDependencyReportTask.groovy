@@ -2,14 +2,21 @@ package com.zen.plugin.lib.analysis.task
 
 import com.android.build.gradle.internal.variant.BaseVariantData
 import com.zen.plugin.lib.analysis.VariantAnalysisHelper
+import com.zen.plugin.lib.analysis.comparator.SizeComparator
 import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.log.ILog
+import com.zen.plugin.lib.analysis.log.Logger
+import com.zen.plugin.lib.analysis.model.FileWrapper
 import com.zen.plugin.lib.analysis.model.Library
 import com.zen.plugin.lib.analysis.renderer.LibraryAnalysisReportRenderer
 import com.zen.plugin.lib.analysis.renderer.LibraryCsvReportRenderer
 import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
+import com.zen.plugin.lib.analysis.log.LogReportRenderer
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.gradle.logging.StyledTextOutputFactory
+import org.gradle.api.artifacts.Configuration
 
 class LibraryDependencyReportTask extends DefaultTask {
 
@@ -18,9 +25,12 @@ class LibraryDependencyReportTask extends DefaultTask {
     private static final String FILE_DEPENDENCY_RANKING = "LibraryRanking.md";
     private static final String FILE_DEPENDENCY_STATISTICS_RANKING = "LibraryStatisticsRanking.md";
     private static final String FILE_DEPENDENCY_CSV = "LibraryStatistics.csv";
+    private static final String FILE_ALL_FILES = "AllFiles.md";
 
     private BaseVariantData variant;
     private LibraryAnalysisExtension extension;
+    private Configuration configuration;
+    private ILog logger;
 
     @TaskAction
     public void generate() throws IOException {
@@ -35,6 +45,29 @@ class LibraryDependencyReportTask extends DefaultTask {
         renderRankingReportFile(library);
 //        renderStatisticsRankingReportFile(library);
         renderStatisticsCsvReportFile(library);
+        renderAllFiles();
+    }
+
+    private void renderAllFiles() {
+        ILog logger = new Logger()
+        if (configuration == null) {
+            logger.d("configuration is empty");
+        } else {
+            logger.d("configuration:" + configuration.getName())
+            SortedSet<FileWrapper> fileWrappers = new TreeSet<>(new SizeComparator())
+            FileCollection collection = configuration.getIncoming().getFiles()
+            logger.d("file size:" + collection.size())
+            for (File file : collection) {
+                fileWrappers.add(new FileWrapper(file.getName(), file.getName(), file.length()));
+            }
+
+            LibraryMdReportRenderer renderer = new LibraryMdReportRenderer();
+            renderer.setOutputFile(prepareOutputFile(FILE_ALL_FILES));
+            renderer.render(fileWrappers);
+        }
+
+        new LogReportRenderer("renderAllFiles.txt", "${project.buildDir}/" + extension.outputPath)
+                .renderLog(logger);
     }
 
     private void renderConsole(Library library) {
@@ -105,4 +138,11 @@ class LibraryDependencyReportTask extends DefaultTask {
         this.extension = extension
     }
 
+    Configuration getConfiguration() {
+        return configuration
+    }
+
+    void setConfiguration(Configuration configuration) {
+        this.configuration = configuration
+    }
 }
