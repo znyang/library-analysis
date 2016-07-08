@@ -38,7 +38,8 @@ class LibraryDependencyReportTask extends DefaultTask {
             return
         }
 
-        Library library = VariantAnalysisHelper.analysis(variant, extension.ignore, extension.limit.getFileSize());
+        Library library = VariantAnalysisHelper
+                .analysis(variant, extension.ignore, extension.limit.getFileSize());
         renderConsole(library)
         renderReportFile(library);
         renderLargeReportFile(library);
@@ -46,6 +47,10 @@ class LibraryDependencyReportTask extends DefaultTask {
 //        renderStatisticsRankingReportFile(library);
         renderStatisticsCsvReportFile(library);
         renderAllFiles();
+    }
+
+    private void renderHtmlReport(Library library) {
+
     }
 
     private void renderAllFiles() {

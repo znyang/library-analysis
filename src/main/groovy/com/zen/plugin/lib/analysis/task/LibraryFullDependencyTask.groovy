@@ -9,6 +9,8 @@ import com.zen.plugin.lib.analysis.log.ILog
 import com.zen.plugin.lib.analysis.log.Logger
 import com.zen.plugin.lib.analysis.log.LogReportRenderer
 import com.zen.plugin.lib.analysis.model.FileWrapper
+import com.zen.plugin.lib.analysis.model.Node
+import com.zen.plugin.lib.analysis.renderer.LibraryHtmlReportRenderer
 import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -51,11 +53,31 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
             renderer.render(configuration);
             renderer.completeConfiguration(configuration);
 
-            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(configuration, logger)
+            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(project, configuration, logger)
             renderAllJarFiles(wrappers)
+
+            renderNodeTree(configuration)
         }
 
         new LogReportRenderer("FullDependencyTask.log", "${project.buildDir}/" + extension.outputPath).renderLog(logger);
+    }
+
+    private void renderNodeTree(Configuration configuration) {
+        // copy resource files
+        // FIXME: not working
+//        ["js/jquery.ztree.core.min.js", "js/jquery-1.4.4.min.js",
+//         "css/demo.css", "css/zTreeStyle/zTreeStyle.css",
+//         "css/zTreeStyle/line_conn.gif", "css/zTreeStyle/loading.gif", "css/zTreeStyle/zTreeStandard.gif", "css/zTreeStyle/zTreeStandard.png"]
+//                .each { String resourceName ->
+//            def resource = getClass().getResourceAsStream("/com/zen/plugin/lib/analysis/" + resourceName);
+//            def targetFile = new File("${project.buildDir}/" + extension.outputPath + "/${configurations.name}", resourceName)
+//            targetFile.mkdirs()
+//            targetFile.write resource.text
+//        }
+        Node root = VariantAnalysisHelper.convertDependencyNode(configuration.getIncoming().getResolutionResult());
+        LibraryHtmlReportRenderer renderer = new LibraryHtmlReportRenderer();
+        renderer.setOutputFile(prepareOutputFile("AllDependencies.html"));
+        renderer.render(root);
     }
 
     private void renderAllJarFiles(SortedSet<FileWrapper> wrappers) {

@@ -59,6 +59,23 @@ public class Library {
      */
     final List<ZipEntry> mLargeEntries = new ArrayList<>();
 
+    private String mName;
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getName() {
+        if (mName == null) {
+            if (mLibraryDependency != null) {
+                mName = mLibraryDependency.getName();
+            } else {
+                mName = "unknown";
+            }
+        }
+        return mName;
+    }
+
     @Nullable
     public LibraryDependency getLibraryDependency() {
         return mLibraryDependency;
