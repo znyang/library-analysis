@@ -10,9 +10,18 @@ import java.util.List;
  * @version 2016/7/8
  */
 public class Node {
-    public String name;
-    public boolean open;
-    public List<Node> children;
+    private String     id;
+    public  String     name;
+    private boolean    open;
+    private List<Node> children;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

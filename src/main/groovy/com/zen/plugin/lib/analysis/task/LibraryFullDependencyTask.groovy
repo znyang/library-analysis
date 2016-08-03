@@ -1,15 +1,16 @@
 package com.zen.plugin.lib.analysis.task
 
-import com.zen.plugin.lib.analysis.VariantAnalysisHelper;
+import com.zen.plugin.lib.analysis.VariantAnalysisHelper
+import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.log.ILog;
 
 
 //import com.android.build.gradle.internal.tasks.DependencyReportTask;
-import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
-import com.zen.plugin.lib.analysis.log.ILog
-import com.zen.plugin.lib.analysis.log.Logger
 import com.zen.plugin.lib.analysis.log.LogReportRenderer
+import com.zen.plugin.lib.analysis.log.Logger
 import com.zen.plugin.lib.analysis.model.FileWrapper
 import com.zen.plugin.lib.analysis.model.Node
+import com.zen.plugin.lib.analysis.renderer.LibraryGraphHtmlReportRenderer
 import com.zen.plugin.lib.analysis.renderer.LibraryHtmlReportRenderer
 import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
 import org.gradle.api.Project
@@ -53,8 +54,8 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
             renderer.render(configuration);
             renderer.completeConfiguration(configuration);
 
-            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(project, configuration, logger)
-            renderAllJarFiles(wrappers)
+//            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(project, configuration, logger)
+//            renderAllJarFiles(wrappers)
 
             renderNodeTree(configuration)
         }
@@ -75,9 +76,14 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
 //            targetFile.write resource.text
 //        }
         Node root = VariantAnalysisHelper.convertDependencyNode(configuration.getIncoming().getResolutionResult());
+
         LibraryHtmlReportRenderer renderer = new LibraryHtmlReportRenderer();
-        renderer.setOutputFile(prepareOutputFile("AllDependencies.html"));
+        renderer.setOutputFile(prepareOutputFile("TreeDependencies.html"));
         renderer.render(root);
+
+        LibraryGraphHtmlReportRenderer graphRenderer = new LibraryGraphHtmlReportRenderer();
+        graphRenderer.setOutputFile(prepareOutputFile("GraphDependencies.html"));
+        graphRenderer.render(root);
     }
 
     private void renderAllJarFiles(SortedSet<FileWrapper> wrappers) {

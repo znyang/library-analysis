@@ -9,6 +9,7 @@ import com.android.builder.dependency.LibraryDependency;
 import com.zen.plugin.lib.analysis.comparator.SizeComparator;
 import com.zen.plugin.lib.analysis.log.ILog;
 import com.zen.plugin.lib.analysis.model.FileWrapper;
+import com.zen.plugin.lib.analysis.model.GraphNode;
 import com.zen.plugin.lib.analysis.model.Library;
 import com.zen.plugin.lib.analysis.model.Node;
 
@@ -22,8 +23,10 @@ import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleRes
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -73,6 +76,30 @@ public final class VariantAnalysisHelper {
         return fileWrappers;
     }
 
+    public static GraphNode convertGraphNode(Node node) {
+        return convertGraphNode(new HashMap<String, GraphNode>(), node);
+    }
+
+    private static GraphNode convertGraphNode(@NonNull Map<String, GraphNode> nodes, Node node) {
+        GraphNode graphNode;
+        if (!nodes.containsKey(node.getId())) {
+            graphNode = new GraphNode(node.getId());
+            nodes.put(graphNode.getName(), graphNode);
+            graphNode.setDag(nodes);
+        } else {
+            return nodes.get(node.getId());
+        }
+
+        List<Node> children = node.getChildren();
+        if (children == null || children.isEmpty()) {
+            return graphNode;
+        }
+        for (Node child : children) {
+            graphNode.addChild(convertGraphNode(nodes, child));
+        }
+        return graphNode;
+    }
+
     public static Node convertDependencyNode(ResolutionResult result) {
         return convertDependencyNode(new HashSet<>(), new RenderableModuleResult(result.getRoot()));
     }
@@ -97,6 +124,7 @@ public final class VariantAnalysisHelper {
         boolean hasChildren = children != null && !children.isEmpty();
 
         Node node = new Node();
+        node.setId(result.getName());
         // 已加入过并且有子节点，添加一个标记#
         node.setName(hasAdded && hasChildren ? "+ " + result.getName() : result.getName());
 
