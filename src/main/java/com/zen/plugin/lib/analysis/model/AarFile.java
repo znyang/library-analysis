@@ -38,8 +38,9 @@ public class AarFile {
         Enumeration<? extends ZipEntry> enumeration = mAarFile.entries();
         while (enumeration.hasMoreElements()) {
             ZipEntry entry = enumeration.nextElement();
-            // 忽略jar文件
-            if (entry.getName().endsWith(".jar")) {
+            String name = entry.getName();
+            // 忽略jar文件/R.txt/value.xml
+            if (name.endsWith(".jar") || name.equals("R.txt") || name.equals("res/values/values.xml")) {
                 continue;
             }
             if (entry.getSize() >= limitSize) {

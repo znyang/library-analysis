@@ -1,9 +1,11 @@
-package com.zen.plugin.lib.analysis;
+package com.zen.plugin.lib.analysis.renderer;
 
 import com.android.annotations.NonNull;
 import com.android.build.gradle.internal.variant.BaseVariantData;
 import com.android.builder.dependency.JarDependency;
 import com.android.builder.dependency.LibraryDependency;
+import com.zen.plugin.lib.analysis.FileUtils;
+import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension;
 import com.zen.plugin.lib.analysis.model.Library;
 
 import org.gradle.api.Action;
@@ -29,9 +31,9 @@ import static org.gradle.logging.StyledTextOutput.Style.Normal;
  */
 public class LibraryAnalysisReportRenderer extends TextReportRenderer {
 
-    private boolean hasConfigs;
-    private boolean hasCyclicDependencies;
-    private GraphRenderer renderer;
+    private boolean                  hasConfigs;
+    private boolean                  hasCyclicDependencies;
+    private GraphRenderer            renderer;
     private LibraryAnalysisExtension extension;
 
     @Override

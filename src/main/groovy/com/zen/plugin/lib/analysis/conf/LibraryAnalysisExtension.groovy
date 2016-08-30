@@ -1,4 +1,4 @@
-package com.zen.plugin.lib.analysis
+package com.zen.plugin.lib.analysis.conf
 
 import org.gradle.util.ConfigureUtil
 
