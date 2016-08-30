@@ -6,8 +6,6 @@ import com.zen.plugin.lib.analysis.model.GraphNode
 import com.zen.plugin.lib.analysis.model.Node
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
 
-import java.nio.file.Files
-
 /**
  * LibraryHtmlReportRenderer
  *
@@ -16,34 +14,23 @@ import java.nio.file.Files
  */
 class LibraryGraphHtmlReportRenderer extends TextReportRenderer {
 
+    private File targetFile
+
+    @Override
+    void setOutputFile(File file) throws IOException {
+        super.setOutputFile(file)
+        targetFile = file.getParentFile()
+    }
+
     public void render(final Node root) throws IOException {
         String json = "[]";
         if (root != null) {
             GraphNode graphNode = VariantAnalysisHelper.convertGraphNode(root);
             String nodes = getNodesData(graphNode)
             String edges = getEdgesData(graphNode)
-//            System.out.println(nodes)
-//            System.out.println(edges)
-            getTextOutput().text(StringConstants.getGraphFormat(root.getName(), nodes, edges));
+            getTextOutput().text(StringConstants.getGraphFormat(root.getName(), nodes, edges))
         } else {
-            getTextOutput().text(StringConstants.getGraphFormat("No Dependencies", json, json));
-        }
-    }
-
-    private void copyFile2() {
-        final String target = "build/gen/demo.css";
-        new File("build/gen/").mkdirs()
-//        final File src = new File(getClass().getClassLoader().getResource("./").getPath());
-//
-//        src.eachFile {
-//            println it.getAbsoluteFile()
-//        }
-        def source = this.getClass().getResourceAsStream("/com/zen/plugin/lib/analysis/css/demo.css")
-        new File(target).withDataOutputStream {
-            os ->
-//                new File(source).withDataInputStream {
-                os << source
-//                }
+            getTextOutput().text(StringConstants.getGraphFormat("No Dependencies", json, json))
         }
     }
 

@@ -2,12 +2,8 @@ package com.zen.plugin.lib.analysis.task
 
 import com.zen.plugin.lib.analysis.VariantAnalysisHelper
 import com.zen.plugin.lib.analysis.conf.LibraryAnalysisExtension
-import com.zen.plugin.lib.analysis.log.ILog;
-
 
 //import com.android.build.gradle.internal.tasks.DependencyReportTask;
-import com.zen.plugin.lib.analysis.log.LogReportRenderer
-import com.zen.plugin.lib.analysis.log.Logger
 import com.zen.plugin.lib.analysis.model.FileWrapper
 import com.zen.plugin.lib.analysis.model.Node
 import com.zen.plugin.lib.analysis.renderer.LibraryGraphHtmlReportRenderer
@@ -16,6 +12,7 @@ import com.zen.plugin.lib.analysis.renderer.LibraryMdReportRenderer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.ConfigurationContainer
+import org.gradle.api.artifacts.result.ResolutionResult
 import org.gradle.api.internal.tasks.options.Option
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.DependencyReportRenderer
@@ -40,6 +37,36 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
         this.renderer = renderer;
     }
 
+    private static void copyResources(String targetPath) {
+        def files = [
+                "css/z/img/",
+                "css/demo.css",
+                "css/z/ztree.css",
+                "css/z/img/line_conn.gif",
+                "css/z/img/loading.gif",
+                "css/z/img/zTreeStandard.gif",
+                "css/z/img/zTreeStandard.png",
+
+                "js/",
+                "js/jquery.ztree.core.min.js",
+                "js/jquery-1.4.4.min.js",
+                "js/cytoscape-dagre.js",
+                "js/dagre.min.js"
+        ]
+
+        files.each {
+            if (it.endsWith('/')) {
+                new File(targetPath, it).mkdirs()
+                return
+            }
+            def source = getClass().getResourceAsStream("/com/zen/plugin/lib/analysis/${it}")
+            def target = new File(targetPath, it)
+            target.withDataOutputStream {
+                os -> os << source
+            }
+        }
+    }
+
     public void generate(Project project) throws IOException {
         SortedSet<Configuration> sortedConfigurations = new TreeSet<Configuration>(new Comparator<Configuration>() {
             public int compare(Configuration conf1, Configuration conf2) {
@@ -48,41 +75,26 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
         });
         sortedConfigurations.addAll(getReportConfigurations());
 
-        ILog logger = new Logger();
         for (Configuration configuration : sortedConfigurations) {
             renderer.startConfiguration(configuration);
             renderer.render(configuration);
             renderer.completeConfiguration(configuration);
-
-//            SortedSet<FileWrapper> wrappers = VariantAnalysisHelper.analysis(project, configuration, logger)
-//            renderAllJarFiles(wrappers)
-
             renderNodeTree(configuration)
         }
-
-        new LogReportRenderer("FullDependencyTask.log", "${project.buildDir}/" + extension.outputPath).renderLog(logger);
     }
 
     private void renderNodeTree(Configuration configuration) {
-        // copy resource files
-        // FIXME: not working
-//        ["js/jquery.ztree.core.min.js", "js/jquery-1.4.4.min.js",
-//         "css/demo.css", "css/zTreeStyle/zTreeStyle.css",
-//         "css/zTreeStyle/line_conn.gif", "css/zTreeStyle/loading.gif", "css/zTreeStyle/zTreeStandard.gif", "css/zTreeStyle/zTreeStandard.png"]
-//                .each { String resourceName ->
-//            def resource = getClass().getResourceAsStream("/com/zen/plugin/lib/analysis/" + resourceName);
-//            def targetFile = new File("${project.buildDir}/" + extension.outputPath + "/${configurations.name}", resourceName)
-//            targetFile.mkdirs()
-//            targetFile.write resource.text
-//        }
-        Node root = VariantAnalysisHelper.convertDependencyNode(configuration.getIncoming().getResolutionResult());
+        ResolutionResult result = configuration.getIncoming().getResolutionResult()
+        Node root = VariantAnalysisHelper.convertDependencyNode(result)
+
+        copyResources(prepareTargetPath(configuration))
 
         LibraryHtmlReportRenderer renderer = new LibraryHtmlReportRenderer();
-        renderer.setOutputFile(prepareOutputFile("TreeDependencies.html"));
+        renderer.setOutputFile(prepareOutputFile(configuration, "TreeDependencies.html"));
         renderer.render(root);
 
         LibraryGraphHtmlReportRenderer graphRenderer = new LibraryGraphHtmlReportRenderer();
-        graphRenderer.setOutputFile(prepareOutputFile("GraphDependencies.html"));
+        graphRenderer.setOutputFile(prepareOutputFile(configuration, "GraphDependencies.html"));
         graphRenderer.render(root);
     }
 
@@ -134,14 +146,21 @@ public class LibraryFullDependencyTask extends AbstractReportTask {
     }
 
     public ConfigurationContainer getTaskConfigurations() {
-        return getProject().getConfigurations();
+        getProject().getConfigurations();
     }
 
-    private File prepareOutputFile(String fileName) {
-        def path = "${project.buildDir}/" + extension.outputPath + "/${configurations.name}"
-        new File(path).mkdirs();
+    private String prepareTargetPath(Configuration configuration) {
+        def path = "${project.buildDir}/" + extension.outputPath + "/${configuration.name}"
+        File file = new File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        path
+    }
 
-        File analysisFile = new File(path, fileName);
+    private File prepareOutputFile(Configuration configuration, String fileName) {
+        def path = prepareTargetPath(configuration)
+        File analysisFile = new File(path, fileName)
         if (analysisFile.exists()) {
             analysisFile.delete()
         }

@@ -21,6 +21,7 @@ sourceSets {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 

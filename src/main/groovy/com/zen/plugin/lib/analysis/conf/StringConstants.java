@@ -13,7 +13,7 @@ public class StringConstants {
             "  <TITLE> %s Dependencies </TITLE>\n" +
             "  <meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\">\n" +
             "  <link rel=\"stylesheet\" href=\"css/demo.css\" type=\"text/css\">\n" +
-            "  <link rel=\"stylesheet\" href=\"css/zTreeStyle/zTreeStyle.css\" type=\"text/css\">\n" +
+            "  <link rel=\"stylesheet\" href=\"css/z/ztree.css\" type=\"text/css\">\n" +
             "  <script type=\"text/javascript\" src=\"js/jquery-1.4.4.min.js\"></script>\n" +
             "  <script type=\"text/javascript\" src=\"js/jquery.ztree.core.min.js\"></script>\n" +
             "  <SCRIPT LANGUAGE=\"JavaScript\">\n" +
@@ -54,8 +54,8 @@ public class StringConstants {
             "<!-- for testing with local version of cytoscape.js -->\n" +
             "<!--<script src=\"../cytoscape.js/build/cytoscape.js\"></script>-->\n" +
             "\n" +
-            "<script src=\"https://cdn.rawgit.com/cpettitt/dagre/v0.7.4/dist/dagre.min.js\"></script>\n" +
-            "<script src=\"https://cdn.rawgit.com/cytoscape/cytoscape.js-dagre/1.1.2/cytoscape-dagre.js\"></script>\n" +
+            "<script src=\"js/dagre.min.js\"></script>\n" +
+            "<script src=\"js/cytoscape-dagre.js\"></script>\n" +
             "\n" +
             "<style>\n" +
             "body {\n" +
@@ -88,7 +88,8 @@ public class StringConstants {
             "          autounselectify: true,\n" +
             "\n" +
             "layout: {\n" +
-            "name: 'dagre'\n" +
+            "name: 'dagre',\n" +
+            "rankDir: 'LR'"+
             "},\n" +
             "\n" +
             "style: [\n" +

@@ -1,14 +1,10 @@
-package com.zen.plugin.lib.analysis.renderer;
+package com.zen.plugin.lib.analysis.renderer
 
-import com.amazonaws.util.json.JSONArray;
 import com.google.gson.Gson
-import com.zen.plugin.lib.analysis.conf.StringConstants;
-import com.zen.plugin.lib.analysis.model.Library;
-import com.zen.plugin.lib.analysis.model.Node;
-
-import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer;
-
-import java.io.IOException;
+import com.zen.plugin.lib.analysis.conf.StringConstants
+import com.zen.plugin.lib.analysis.model.Library
+import com.zen.plugin.lib.analysis.model.Node
+import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
 
 /**
  * LibraryHtmlReportRenderer
@@ -20,22 +16,13 @@ public class LibraryHtmlReportRenderer extends TextReportRenderer {
 
     private static final Gson GSON = new Gson();
 
-
-    public void render(final Library library) throws IOException {
-        String json = "[]";
-        if (library != null && !library.isEmpty()) {
-            json = parseLibrary(library);
-        }
-        getTextOutput().text(String.format(StringConstants.CONTENT_FORMAT, library == null ? "" : library.getName(), json));
-    }
-
     public void render(final Node root) throws IOException {
         String json = "[]";
         if (root != null) {
             json = GSON.toJson(root);
-            getTextOutput().text(String.format(StringConstants.CONTENT_FORMAT, root.getName(), "[" + json + "]"));
+            getTextOutput().text(String.format(StringConstants.CONTENT_FORMAT, root.getName(), "[" + json + "]"))
         } else {
-            getTextOutput().text(String.format(StringConstants.CONTENT_FORMAT, "no dependencies", json));
+            getTextOutput().text(String.format(StringConstants.CONTENT_FORMAT, "no dependencies", json))
         }
     }
 
