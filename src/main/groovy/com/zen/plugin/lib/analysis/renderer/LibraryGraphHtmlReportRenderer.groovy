@@ -6,6 +6,8 @@ import com.zen.plugin.lib.analysis.model.GraphNode
 import com.zen.plugin.lib.analysis.model.Node
 import org.gradle.api.tasks.diagnostics.internal.TextReportRenderer
 
+import java.nio.file.Files
+
 /**
  * LibraryHtmlReportRenderer
  *
@@ -20,12 +22,28 @@ class LibraryGraphHtmlReportRenderer extends TextReportRenderer {
             GraphNode graphNode = VariantAnalysisHelper.convertGraphNode(root);
             String nodes = getNodesData(graphNode)
             String edges = getEdgesData(graphNode)
-            System.out.println(nodes)
-            System.out.println(edges)
-            getTextOutput().text(StringConstants.getGraphFormat(nodes, edges));
-
+//            System.out.println(nodes)
+//            System.out.println(edges)
+            getTextOutput().text(StringConstants.getGraphFormat(root.getName(), nodes, edges));
         } else {
-            getTextOutput().text(StringConstants.getGraphFormat(json, json));
+            getTextOutput().text(StringConstants.getGraphFormat("No Dependencies", json, json));
+        }
+    }
+
+    private void copyFile2() {
+        final String target = "build/gen/demo.css";
+        new File("build/gen/").mkdirs()
+//        final File src = new File(getClass().getClassLoader().getResource("./").getPath());
+//
+//        src.eachFile {
+//            println it.getAbsoluteFile()
+//        }
+        def source = this.getClass().getResourceAsStream("/com/zen/plugin/lib/analysis/css/demo.css")
+        new File(target).withDataOutputStream {
+            os ->
+//                new File(source).withDataInputStream {
+                os << source
+//                }
         }
     }
 
@@ -35,9 +53,8 @@ class LibraryGraphHtmlReportRenderer extends TextReportRenderer {
         nodes.append('[')
         dag.each {
             key, value ->
-                nodes.append("{ data: { id: '")
-                        .append(value.getName())
-                        .append("' } },\n")
+                String format = "{ data: { id: '%s', name: '%s' } },\n";
+                nodes.append(String.format(format, value.getName(), value.getName()))
         }
         nodes.append(']')
         return nodes.toString()
@@ -50,7 +67,6 @@ class LibraryGraphHtmlReportRenderer extends TextReportRenderer {
 
         dag.each {
             key, value ->
-                System.out.println("--"+value.getName())
                 if (value.hasChildren()) {
                     def children = value.getChildren()
                     for (GraphNode child : children) {

@@ -33,10 +33,10 @@ public class StringConstants {
             "</BODY>\n" +
             "</HTML>";
 
-    public static final String getGraphFormat(String nodes, String edges) {
+    public static String getGraphFormat(String name, String nodes, String edges) {
         final String data = "nodes: " + nodes + ", edges: " + edges;
         // String.format("nodes: %s,\nedges: %s\n", nodes,edges);
-        return GRAPH_HTML1 + data + GRAPH_HTML2;
+        return GRAPH_HTML1 + data + String.format(GRAPH_HTML2, name);
     }
 
     public static final String GRAPH_HTML1 = "<!DOCTYPE>\n" +
@@ -48,8 +48,8 @@ public class StringConstants {
             "\n" +
             "<meta name=\"viewport\" content=\"width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1\">\n" +
             "\n" +
-            "<script src=\"http://code.jquery.com/jquery-2.0.3.min.js\"></script>\n" +
-            "<script src=\"http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js\"></script>\n" +
+            "<script src=\"http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js\"></script>\n" +
+            "<script src=\"http://cdn.bootcss.com/cytoscape/2.7.7/cytoscape.min.js\"></script>\n" +
             "\n" +
             "<!-- for testing with local version of cytoscape.js -->\n" +
             "<!--<script src=\"../cytoscape.js/build/cytoscape.js\"></script>-->\n" +
@@ -95,22 +95,24 @@ public class StringConstants {
             "{\n" +
             "selector: 'node',\n" +
             "style: {\n" +
-            "'content': 'data(id)',\n" +
-            "'text-opacity': 0.5,\n" +
-            "'text-valign': 'center',\n" +
-            "'text-halign': 'right',\n" +
-            "'background-color': '#11479e'\n" +
+            "        'content': 'data(name)',\n" +
+            "        'text-halign': 'right',\n"+
+            "        'text-valign': 'center',\n" +
+            "        'color': 'white',\n" +
+            "        'text-outline-width': 2,\n" +
+            "        'background-color': '#669',\n" +
+            "        'text-outline-color': '#669'" +
             "}\n" +
             "},\n" +
             "\n" +
             "{\n" +
             "selector: 'edge',\n" +
             "style: {\n" +
-            "'width': 4,\n" +
-            "'target-arrow-shape': 'triangle',\n" +
-            "'line-color': '#9dbaea',\n" +
-            "'target-arrow-color': '#9dbaea',\n" +
-            "'curve-style': 'bezier'\n" +
+            "        'curve-style': 'bezier',\n" +
+            "        'target-arrow-shape': 'triangle',\n" +
+            "        'target-arrow-color': '#ccc',\n" +
+            "        'line-color': '#ccc',\n" +
+            "        'width': 3" +
             "}\n" +
             "}\n" +
             "],\n" +
@@ -124,7 +126,7 @@ public class StringConstants {
             "</head>\n" +
             "\n" +
             "<body>\n" +
-            "<h1>cytoscape-dagre demo</h1>\n" +
+            "<h1>%s</h1>\n" +
             "\n" +
             "<div id=\"cy\"></div>\n" +
             "\n" +
