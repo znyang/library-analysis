@@ -15,9 +15,9 @@ import org.junit.Test
 
 class NodeTest extends GMockTestCase {
 
-    RenderableDependency data
-    DependencyDictionary dictionary
-    DependencyGenerator  generator
+    RenderableDependency     data
+    DependencyDictionary     dictionary
+    DependencyGenerator      generator
     LibraryAnalysisExtension extension
 
     @Override
@@ -45,6 +45,7 @@ class NodeTest extends GMockTestCase {
     }
 
     void checkFileSize(Node node) {
+        println "${node.name} ${node.fileSize}"
         assert node.fileSize > 0L
         if (node.children != null) {
             node.children.each {
