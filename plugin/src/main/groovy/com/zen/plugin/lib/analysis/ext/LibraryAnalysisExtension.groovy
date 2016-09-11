@@ -8,7 +8,7 @@ import org.gradle.util.ConfigureUtil
  */
 class LibraryAnalysisExtension {
 
-    private static final String ANALYSIS_OUTPUT_PATH = "report/zen/analysis/library"
+    private static final String ANALYSIS_OUTPUT_PATH = "reports/zen/analysis/library"
     private static final def    SIZE_STYLES          = ['tag-normal', 'tag-warning', 'tag-danger']
     static final def            LAST_INDEX           = SIZE_STYLES.size() - 1
 
@@ -19,7 +19,7 @@ class LibraryAnalysisExtension {
     final LimitSizeConfig limit
           boolean         showTree   = false
           boolean         log        = false
-          List<String>    size       = [200 * 1024, 1024 * 1024]
+          List<String>    region     = [200 * 1024, 1024 * 1024]
 
     LibraryAnalysisExtension() {
         limit = new LimitSizeConfig()
@@ -30,11 +30,9 @@ class LibraryAnalysisExtension {
     }
 
     String getSizeTag(long s) {
-        def index = size.findIndexOf {
-//            println "${s} <? ${it}"
+        def index = region.findIndexOf {
             s <= it
         }
-//        println index
         index = index < 0 ? LAST_INDEX : index
 
         SIZE_STYLES[index]

@@ -34,7 +34,6 @@ class DependencyDictionary {
 
     File findDependency(String dependencyId) {
         if (cacheFiles.containsKey(dependencyId)) {
-//            println "hit cache ${dependencyId} => ${cacheFiles.get(dependencyId).path}"
             return cacheFiles.get(dependencyId)
         }
 
@@ -85,7 +84,6 @@ class DependencyDictionary {
         }
         DependencyInfo info = new DependencyInfo(id, file.size(), FileUtils.getFileType(file.name))
         cacheInfoMap.put(id, info)
-//        println "${id} ==> ${file.path}"
         info
     }
 

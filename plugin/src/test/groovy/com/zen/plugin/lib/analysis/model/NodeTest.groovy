@@ -2,6 +2,7 @@ package com.zen.plugin.lib.analysis.model
 
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.mock.DependencyGenerator
+import com.zen.plugin.lib.analysis.util.Logger
 import org.gmock.GMockTestCase
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
@@ -45,7 +46,9 @@ class NodeTest extends GMockTestCase {
     }
 
     void checkFileSize(Node node) {
-        println "${node.name} ${node.fileSize}"
+        String data = node.toString()
+        Logger.D?.log data
+
         assert node.fileSize > 0L
         if (node.children != null) {
             node.children.each {

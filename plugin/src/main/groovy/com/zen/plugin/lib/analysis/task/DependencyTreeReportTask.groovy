@@ -50,7 +50,8 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         timer.mark(log, "supply info")
 
-        new HtmlRenderer(output).render(root)
+        def result = new HtmlRenderer(output).render(root)
+        println "output result: ${result}"
 
         if (extension.showTree) {
             renderer.startConfiguration(configuration)

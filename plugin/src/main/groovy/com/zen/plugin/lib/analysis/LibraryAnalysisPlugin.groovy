@@ -33,16 +33,26 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
         configurations.findAll {
             return !it.allDependencies.isEmpty()
         }.each {
-            def conf = it.getName();
-            def task = project.tasks.create("${TASK_PREFIX}_${conf}", DependencyTreeReportTask)
+            def conf = it.getName()
+            def task = project.tasks.create(genTaskName(conf), DependencyTreeReportTask)
             task.configuration = it
             task.group = BASE_GROUP
             task.extension = extension
             if (!extension.log) {
                 Logger.D = null
-            }else{
+            } else {
                 task.log = Logger.D
             }
+        }
+    }
+
+    static String genTaskName(String name) {
+        char[] arr = name.toCharArray()
+        if (arr[0].lowerCase) {
+            arr[0] = Character.toUpperCase(arr[0])
+            "${TASK_PREFIX}${String.valueOf(arr)}"
+        } else {
+            "${TASK_PREFIX}${name}"
         }
     }
 }

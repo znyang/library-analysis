@@ -3,14 +3,14 @@ apply plugin: 'com.zen.lib.analysis'
 
 buildscript {
     repositories {
-        maven{
+        maven {
             url 'file:///e:\\repo'
         }
         jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.github.znyang:library-analysis:0.1-SNAPSHOT'
+        classpath 'com.github.znyang:library-analysis:0.1'
     }
 }
 
@@ -79,7 +79,8 @@ dependencies {
 }
 
 libReport {
-    log = true
+    log = false
+    region = [50 * 1024, 500 * 1024]
     ignore = [
             "com.android.support:support-v4"
     ]
