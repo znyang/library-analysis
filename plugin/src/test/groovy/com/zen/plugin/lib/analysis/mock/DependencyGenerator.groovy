@@ -84,7 +84,7 @@ class DependencyGenerator extends BaseGenerator {
         DEP.each {
             File file = gmc.mock(File)
             file.name.returns(it.value.fileName).stub()
-            file.path.returns(it.value.file).stub()
+            file.path.returns(it.value.file.replace('\\', File.separator)).stub()
             file.size().returns(it.value.size).stub()
             files.add(file)
         }
