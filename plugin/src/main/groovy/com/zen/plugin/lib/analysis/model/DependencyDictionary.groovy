@@ -1,6 +1,7 @@
 package com.zen.plugin.lib.analysis.model
 
 import com.zen.plugin.lib.analysis.util.FileUtils
+import com.zen.plugin.lib.analysis.util.Logger
 import org.gradle.api.file.FileCollection
 
 /**
@@ -40,7 +41,7 @@ class DependencyDictionary {
         def dependency = dependencyId.split("\\:")
         def size = dependency.size()
         def result = null
-        println "find start: ${dependencyId}"
+        Logger.D?.log "find start: ${dependencyId}"
 
         if (size == 3) {
             def key = dependency.join(SEPARATOR)
@@ -48,23 +49,23 @@ class DependencyDictionary {
             def keyFull = "${group}${SEPARATOR}${dependency[1]}${SEPARATOR}${dependency[2]}"
 
             result = getFiles().find {
-                println "find ${it.path} ==? ${key} ==? ${keyFull}"
+                Logger.D?.log "find ${it.path} ==? ${key} ==? ${keyFull}"
                 it.path.contains(key) || it.path.contains(keyFull)
             }
         } else if (size == 2) {
             def key = "${BUILD_DIR}${dependency[1]}"
 
             result = getFiles().find {
-                println "find ${it.path} ==? ${key}"
+                Logger.D?.log "find ${it.path} ==? ${key}"
                 it.path.contains(key)
             }
         }
         if (result != null) {
-            println "find result: " + result.path
+            Logger.D?.log "find result: " + result.path
             cacheFiles.put(dependencyId, result)
             files.remove(result)
         } else {
-            println "not found ${dependencyId}"
+            Logger.D?.log "not found ${dependencyId}"
         }
         result
     }

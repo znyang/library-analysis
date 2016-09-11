@@ -38,7 +38,11 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
             task.configuration = it
             task.group = BASE_GROUP
             task.extension = extension
-            task.log = extension.log ? new Logger(true) : null
+            if (!extension.log) {
+                Logger.D = null
+            }else{
+                task.log = Logger.D
+            }
         }
     }
 }

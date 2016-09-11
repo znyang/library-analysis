@@ -15,7 +15,7 @@ class Timer {
 
     void mark(Logger logger, String message) {
         long now = System.currentTimeMillis()
-        logger?.d "${message ?: ""} cost ${now - start}ms"
+        logger?.log "${message ?: ""} cost ${now - start}ms"
         start = now
     }
 

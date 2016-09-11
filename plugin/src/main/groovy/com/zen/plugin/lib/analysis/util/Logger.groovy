@@ -7,15 +7,12 @@ package com.zen.plugin.lib.analysis.util;
 
 class Logger {
 
-    boolean isEnable
+    static Logger D = new Logger()
 
-    Logger(boolean isEnable) {
-        this.isEnable = isEnable
+    private Logger() {
     }
 
-    void d(def message) {
-        if (isEnable) {
-            println message
-        }
+    void log(def message) {
+        println message
     }
 }
