@@ -63,17 +63,17 @@ class DependencyDictionaryTest extends GMockTestCase {
         dictionary = new DependencyDictionary(fileCollection)
     }
 
-    @Test
-    void testFindDependency() {
-        play {
-            fileInfo.each {
-                assert dictionary.findDependency(it.id)
-            }
-            fileInfo.each {
-                assert dictionary.findDependency(it.id)
-            }
-        }
-    }
+//    @Test
+//    void testFindDependency() {
+//        play {
+//            fileInfo.each {
+//                assert dictionary.findDependency(it.id)
+//            }
+//            fileInfo.each {
+//                assert dictionary.findDependency(it.id)
+//            }
+//        }
+//    }
 
     @Test
     void testFindDependencyInfo() {
