@@ -2,6 +2,8 @@ package com.zen.plugin.lib.analysis.model
 
 import org.gmock.GMockTestCase
 import org.gradle.api.file.FileCollection
+import org.junit.Before
+import org.junit.Test
 
 /**
  * @author zen
@@ -47,6 +49,7 @@ class DependencyDictionaryTest extends GMockTestCase {
     }
 
     @Override
+    @Before
     void setUp() {
         super.setUp()
 
@@ -60,6 +63,7 @@ class DependencyDictionaryTest extends GMockTestCase {
         dictionary = new DependencyDictionary(fileCollection)
     }
 
+    @Test
     void testFindDependency() {
         play {
             fileInfo.each {
@@ -71,6 +75,7 @@ class DependencyDictionaryTest extends GMockTestCase {
         }
     }
 
+    @Test
     void testFindDependencyInfo() {
         play {
             fileInfo.eachWithIndex { depend, index ->

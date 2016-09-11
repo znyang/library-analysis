@@ -5,6 +5,8 @@ import com.zen.plugin.lib.analysis.mock.DependencyGenerator
 import org.gmock.GMockTestCase
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
+import org.junit.Before
+import org.junit.Test
 
 /**
  * @author zen
@@ -19,6 +21,7 @@ class NodeTest extends GMockTestCase {
     LibraryAnalysisExtension extension
 
     @Override
+    @Before
     void setUp() {
         super.setUp()
         generator = new DependencyGenerator(gMockController)
@@ -29,6 +32,7 @@ class NodeTest extends GMockTestCase {
         extension = new LibraryAnalysisExtension()
     }
 
+    @Test
     void testData() {
         play {
             Node node = Node.create(data)
