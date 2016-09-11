@@ -40,6 +40,7 @@ class DependencyDictionary {
         def dependency = dependencyId.split("\\:")
         def size = dependency.size()
         def result = null
+        println "find start: ${dependencyId}"
 
         if (size == 3) {
             def key = dependency.join(SEPARATOR)
@@ -47,18 +48,23 @@ class DependencyDictionary {
             def keyFull = "${group}${SEPARATOR}${dependency[1]}${SEPARATOR}${dependency[2]}"
 
             result = getFiles().find {
+                println "find ${it.path} ==? ${key} ==? ${keyFull}"
                 it.path.contains(key) || it.path.contains(keyFull)
             }
         } else if (size == 2) {
             def key = "${BUILD_DIR}${dependency[1]}"
 
             result = getFiles().find {
+                println "find ${it.path} ==? ${key}"
                 it.path.contains(key)
             }
         }
         if (result != null) {
+            println "find result: " + result.path
             cacheFiles.put(dependencyId, result)
             files.remove(result)
+        } else {
+            println "not found ${dependencyId}"
         }
         result
     }
