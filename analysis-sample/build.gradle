@@ -1,0 +1,73 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.zen.lib.analysis'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+
+    defaultConfig {
+        applicationId "com.zen.android.analysis.sample"
+        minSdkVersion 9
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.android.support:design:24.1.1'
+    compile 'com.android.support:recyclerview-v7:24.1.1'
+    compile 'com.android.support:cardview-v7:24.1.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'com.android.support:palette-v7:24.1.1'
+    compile 'com.android.support:palette-v7:24.1.1'
+    compile 'com.android.support:support-vector-drawable:24.1.1'
+
+    compile 'com.squareup.moshi:moshi:1.2.0'
+    compile 'com.alibaba:fastjson:1.1.54.android'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
+
+    compile "com.github.Raizlabs.DBFlow:dbflow:3.1.1"
+
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.facebook.fresco:fresco:0.13.0'
+
+    compile 'com.jakewharton.timber:timber:4.3.0'
+
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC2'
+    compile 'com.google.android.agera:rvdatabinding:1.2.0-beta2'
+
+    compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'com.jakewharton.scalpel:scalpel:1.1.2'
+    compile 'com.jakewharton:process-phoenix:1.0.2'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile 'junit:junit:4.12'
+}
+
+libReport {
+    log = true
+    ignore = [
+            "com.android.support:support-v4"
+    ]
+}

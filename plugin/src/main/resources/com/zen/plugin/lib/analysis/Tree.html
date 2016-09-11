@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+    <TITLE> %title% Dependencies </TITLE>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="css/demo.css" type="text/css">
+    <link rel="stylesheet" href="css/z/ztree.css" type="text/css">
+    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.ztree.core.min.js"></script>
+    <SCRIPT LANGUAGE="JavaScript">
+   var zTreeObj;
+   var setting = {
+       view: {
+           fontCss: getFont,
+           nameIsHTML: true
+       }
+   };
+   var zNodes = %nodes%;
+   $(document).ready(function(){
+      zTreeObj = $.fn.zTree.init($("#dep"), setting, zNodes);
+   });
+   function getFont(treeId, node) {
+       return node.font ? node.font : {};
+   }
+
+    </SCRIPT>
+</HEAD>
+<BODY>
+<div>
+    <div class="ztree">generate by <a href="https://github.com/znyang/library-analysis">Library Analysis Gradle Plugin</a></div>
+    <p class="ztree">注：为节省数据量，含有子节点的库若已经出现过了，就不再显示其子节点。</p>
+    <ul id="dep" class="ztree"></ul>
+</div>
+</BODY>
+</HTML>
