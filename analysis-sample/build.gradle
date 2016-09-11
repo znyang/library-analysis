@@ -6,6 +6,7 @@ buildscript {
         maven {
             url 'file:///e:\\repo'
         }
+        maven { url "https://jitpack.io" }
         jcenter()
     }
     dependencies {

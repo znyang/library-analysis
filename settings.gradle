@@ -1,4 +1,4 @@
-//include ':analysis-sample'
+include ':analysis-sample'
 // Sets the output JAR filename
 rootProject.name = 'library-analysis-gradle-plugin'
 include 'plugin'
