@@ -69,10 +69,9 @@ class DependencyDictionaryTest extends GMockTestCase {
             assert dictionary != null
             fileInfo.eachWithIndex { depend, index ->
                 def info = dictionary.findDependencyInfo(depend.id)
-//                assert info != null
-//                assert info.type.equals('aar')
-//                assert info.size == depend.size
-//                assert info.id.equals(depend.id)
+                assert info.type.equals('aar')
+                assert info.size == depend.size
+                assert info.id.equals(depend.id)
             }
         }
     }

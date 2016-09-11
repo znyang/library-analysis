@@ -11,7 +11,3 @@ script: ./gradlew :plugin:clean :plugin:build :plugin:jacocoReport --info --stac
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-
-cache:
-  directories:
-    - $HOME/build
