@@ -1,16 +1,3 @@
-buildscript {
-    repositories {
-        maven{
-            url 'file:///e:\\repo'
-        }
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
-        classpath 'com.github.znyang:library-analysis:0.1-SNAPSHOT'
-    }
-}
-
 allprojects {
     repositories {
         jcenter()
