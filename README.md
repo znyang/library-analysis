@@ -44,5 +44,3 @@ gradle libReportCompile
 **/build/reports/zen/analysis/library/compile/Tree.html**
 
 ![screenshot](./image/tree.png)
-
-[DEMO](https://raw.githubusercontent.com/znyang/library-analysis/0.1/demo/Tree.html)
