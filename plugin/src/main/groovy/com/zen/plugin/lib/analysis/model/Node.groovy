@@ -81,6 +81,14 @@ class Node {
         supplyInfo(ext, dictionary, false)
     }
 
+    /**
+     * TODO: 性能不佳，数据/视图未作分离
+     *
+     * @param ext
+     * @param dictionary
+     * @param isParentIgnore
+     * @return
+     */
     Set<String> supplyInfo(LibraryAnalysisExtension ext, DependencyDictionary dictionary, boolean isParentIgnore) {
         def ids = new HashSet<String>()
         def info = dictionary.findDependencyInfo(id)
