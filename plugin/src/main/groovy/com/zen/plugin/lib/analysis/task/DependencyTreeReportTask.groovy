@@ -25,7 +25,6 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
     Configuration            configuration
     LibraryAnalysisExtension extension
-    Logger                   log
 
     @Override
     protected ReportRenderer getRenderer() {
@@ -43,12 +42,12 @@ class DependencyTreeReportTask extends AbstractReportTask {
         RenderableDependency dep = new RenderableModuleResult(resolutionResult.getRoot())
         Node root = Node.create(dep)
 
-        timer.mark(log, "create nodes")
+        timer.mark(Logger.W, "create nodes")
 
         DependencyDictionary dictionary = new DependencyDictionary(configuration.getIncoming().getFiles())
         root.supplyInfo(extension, dictionary)
 
-        timer.mark(log, "supply info")
+        timer.mark(Logger.W, "supply info")
 
         def result = new HtmlRenderer(output).render(root)
         println "output result: ${result}"
