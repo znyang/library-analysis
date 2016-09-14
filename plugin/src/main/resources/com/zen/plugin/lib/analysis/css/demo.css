@@ -34,7 +34,7 @@ div.ruler div.cursor {height:20px; width:30px; background-color:#3C6E31; color:w
 
 .tag {
   line-height: 12px;
-  display: inline-block;
+  display: inline;
   font-weight: normal;
   text-align: center;
   white-space: nowrap;
@@ -49,6 +49,7 @@ div.ruler div.cursor {height:20px; width:30px; background-color:#3C6E31; color:w
   background-image: none;
   border: 1px solid transparent;
   border-radius: 4px;
+  vertical-align:middle;
 }
 .tag-ignore {
   color: #fff;
@@ -57,13 +58,13 @@ div.ruler div.cursor {height:20px; width:30px; background-color:#3C6E31; color:w
 }
 .tag-normal {
   color: #fff;
-  background-color: #99C999;
-  border-color: #8CBF8C;
+  background-color: #BBDBBB;
+  border-color: #AAD2AA;
 }
 .tag-warning {
   color: #fff;
-  background-color: #f0ad4e;
-  border-color: #eea236;
+  background-color: #F2B866;
+  border-color: #F0AD4E;
 }
 .tag-danger {
   color: #fff;

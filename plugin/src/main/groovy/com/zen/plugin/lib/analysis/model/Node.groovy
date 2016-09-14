@@ -89,7 +89,9 @@ class Node {
      * @param isParentIgnore
      * @return
      */
-    Set<String> supplyInfo(LibraryAnalysisExtension ext, DependencyDictionary dictionary, boolean isParentIgnore) {
+    Set<String> supplyInfo(LibraryAnalysisExtension ext,
+                           DependencyDictionary dictionary,
+                           boolean isParentIgnore) {
         def ids = new HashSet<String>()
         def info = dictionary.findDependencyInfo(id)
         def ignore = isParentIgnore | ext.isIgnore(id)
@@ -136,17 +138,36 @@ class Node {
             def styleSize = ignore ? "tag-ignore" : ext.getSizeTag(info.size)
             def styleType = "jar".equals(info.type) ? 'type_jar' : 'type_aar'
 
-            txtSize = "<span class='tag ${styleSize}'>${FileUtils.convertFileSize(info.size)}</span>"
-            txtType = "<span class='button ${styleType}'></span>"
+            txtType = "<span class='type ${styleType}'></span>"
+            txtSize = "<span class='tag ${styleSize}'>${txtType}${FileUtils.convertFileSize(info.size)}</span>"
 
             fileSize = info.size
         }
 
-        def styleTotalSize = ignore ? "tag-ignore" : ext.getSizeTag(totalSize)
-        def txtTotalSize = "<span class='tag ${styleTotalSize}'>${FileUtils.convertFileSize(totalSize)}</span>"
-        name = "${txtType ?: ""}${txtTotalSize}${txtSize ?: ""}${name}"
+//        def styleTotalSize = ignore ? "tag-ignore" : ext.getSizeTag(totalSize)
+        def styleTotalSize = "class='tag tag-ignore'"
+        if (!ignore) {
+            styleTotalSize = "class='tag' style='color:#fff;background-color:${genColorCode(totalSize, dictionary.totalSize, dictionary.getFiles().size())}'"
+        }
+        def txtTotalSize = "<span ${styleTotalSize}>${FileUtils.convertFileSize(totalSize)}</span>"
+        name = "${txtTotalSize}${txtSize ?: ''}${name}"
 
         ids
+    }
+
+    private static String genColorCode(long size, long max, int libSize) {
+        if (max == 0L) {
+            return "#ffdddd"
+        }
+        final int color = 0xdd - 0x22
+        def c = max - size * 4
+        if (c < 0) {
+            c = 0
+        }
+
+        int result = color * c / max
+        result += (result << 8) + 0xff0000
+        "#${Integer.toHexString(result)}"
     }
 
 
