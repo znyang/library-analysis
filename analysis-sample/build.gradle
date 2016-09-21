@@ -40,6 +40,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions {
+        dexInProcess false
+    }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -70,7 +77,7 @@ dependencies {
 
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.1.6'
-    compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC2'
+//    compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC2'
     compile 'com.google.android.agera:rvdatabinding:1.2.0-beta2'
 
     compile 'com.jakewharton:butterknife:8.4.0'
