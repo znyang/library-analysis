@@ -10,6 +10,7 @@
 
 1. 支持大文件提醒
 2. 支持忽略部分依赖库大小（大小显示为灰色）
+3. 支持依赖节点大小统计
 
 ## 配置
 
@@ -20,7 +21,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.1'
+        classpath 'com.github.znyang:library-analysis:0.1.1'
     }
 }
 
@@ -43,4 +44,4 @@ gradle libReportCompile
 
 **/build/reports/zen/analysis/library/compile/Tree.html**
 
-![screenshot](./image/tree.png)
+![screenshot](./image/tree2.png)
