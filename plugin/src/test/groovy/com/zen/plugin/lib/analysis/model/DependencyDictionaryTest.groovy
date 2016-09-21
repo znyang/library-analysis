@@ -33,7 +33,8 @@ class DependencyDictionaryTest extends GMockTestCase {
             ]
     ]
 
-    DependencyDictionary dictionary
+    def dictionary
+    def fileCollection
 
     Set<File> prepareFiles() {
         Set<File> files = new HashSet<>()
@@ -53,19 +54,24 @@ class DependencyDictionaryTest extends GMockTestCase {
     void setUp() {
         super.setUp()
 
-        createDictionary()
+        fileCollection = mockFileCollection()
     }
 
-    void createDictionary() {
+    FileCollection mockFileCollection() {
         def fileCollection = mock(FileCollection)
         fileCollection.getFiles().returns(prepareFiles()).stub()
+        return fileCollection
+    }
 
+    void prePlay() {
         dictionary = new DependencyDictionary(fileCollection)
     }
 
     @Test
     void testFindDependencyInfo() {
         play {
+            prePlay()
+
             assert dictionary != null
             fileInfo.eachWithIndex { depend, index ->
                 def info = dictionary.findDependencyInfo(depend.id)

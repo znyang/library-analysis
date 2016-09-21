@@ -1,0 +1,17 @@
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+    jdk System.getenv("JAVA8_HOME")
+    oldJdk System.getenv("JAVA_HOME")
+    javaVersion JavaVersion.VERSION_1_6
+//    jvmArgs '-arg1', '-arg2'
+    defaultMethods false
+    incremental true
+}
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}

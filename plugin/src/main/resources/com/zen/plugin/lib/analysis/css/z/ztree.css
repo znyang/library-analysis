@@ -76,8 +76,11 @@ website:	http://code.google.com/p/jquerytree/
 .ztree li span.button.edit {margin-right:2px; background-position:-110px -48px; vertical-align:top; *vertical-align:middle}
 .ztree li span.button.remove {margin-right:2px; background-position:-110px -64px; vertical-align:top; *vertical-align:middle}
 
-.ztree li span.button.type_aar{background-image:url("./img/aar.png");}
-.ztree li span.button.type_jar{background-image:url("./img/jar.png");}
+.ztree li span.type{line-height:0; margin:0; width:16px; height:14px; display: inline-block; vertical-align:sub;
+                    	border:0 none; cursor: pointer;outline:none;
+                    	margin-right:2px;}
+.ztree li span.type_aar{background-image:url("./img/aar.png");}
+.ztree li span.type_jar{background-image:url("./img/jar.png");}
 .ztree li span.button.omit_ico_docu{margin-right:2px; background-position:-110px 0; vertical-align:top; *vertical-align:middle}
 
 .ztree li span.button.ico_loading{margin-right:2px; background:url(./img/loading.gif) no-repeat scroll 0 0 transparent; vertical-align:top; *vertical-align:middle}

@@ -20,9 +20,12 @@ class DependencyDictionary {
           Set<File>                   files
     final Map<String, File>           cacheFiles   = new HashMap<>()
     final Map<String, DependencyInfo> cacheInfoMap = new HashMap<>()
+          long                        totalSize    = 0L
+          long                        maxSize      = 0L
 
     DependencyDictionary(FileCollection fileCollection) {
         this.fileCollection = fileCollection
+        computeTotalSize()
     }
 
     Set<File> getFiles() {
@@ -30,6 +33,16 @@ class DependencyDictionary {
             files = fileCollection.getFiles()
         }
         files
+    }
+
+    void computeTotalSize() {
+        totalSize = 0
+        getFiles().each {
+            totalSize += it.size()
+            if (it.size() > maxSize) {
+                maxSize = it.size()
+            }
+        }
     }
 
     File findDependency(String dependencyId) {

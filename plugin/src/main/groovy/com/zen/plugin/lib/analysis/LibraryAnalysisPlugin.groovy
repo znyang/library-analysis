@@ -40,8 +40,6 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
             task.extension = extension
             if (!extension.log) {
                 Logger.D = null
-            } else {
-                task.log = Logger.D
             }
         }
     }

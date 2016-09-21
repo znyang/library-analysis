@@ -50,7 +50,7 @@ class DependencyGenerator extends BaseGenerator {
         super(gmc)
     }
 
-    RenderableDependency create() {
+    RenderableDependency mockRootDependency() {
         RenderableDependency root = gmc.mock(RenderableDependency)
         root.getId().returns("root").stub()
         root.getName().returns("Root").stub()
@@ -79,7 +79,7 @@ class DependencyGenerator extends BaseGenerator {
         return 0
     }
 
-    FileCollection getFileCollection() {
+    FileCollection mockFileCollection() {
         Set<File> files = new HashSet<>()
         DEP.each {
             File file = gmc.mock(File)
