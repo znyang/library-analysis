@@ -5,7 +5,7 @@ apply from: "${projectDir}/retrolambda.gradle"
 buildscript {
     repositories {
         maven {
-            url 'file:///e:\\repo'
+            url 'file:///c:\\repo'
         }
         maven { url "https://jitpack.io" }
         jcenter()

@@ -3,7 +3,6 @@ package com.zen.plugin.lib.analysis.model
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.util.FileUtils
 import com.zen.plugin.lib.analysis.util.Logger
-import com.zen.plugin.lib.analysis.util.Timer
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
 
 /**

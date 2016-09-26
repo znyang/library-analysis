@@ -33,22 +33,14 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
     @Override
     protected void generate(Project project) throws IOException {
-        String output = prepareOutputPath()
+        def output = prepareOutputPath()
         ResourceUtils.copyResources(output)
 
         def timer = new Timer()
 
-        ResolutionResult resolutionResult = configuration.getIncoming().getResolutionResult()
-        resolutionResult.allComponents.each {
-            println "----------"
-            println "${it.id} ?? ${it.selectionReason.description}";
-            it.dependents.each {
-                dep ->
-                    println dep
-            }
-        }
-        RenderableDependency dep = new RenderableModuleResult(resolutionResult.getRoot())
-        Node root = Node.create(dep)
+        def resolutionResult = configuration.getIncoming().getResolutionResult()
+        def dep = new RenderableModuleResult(resolutionResult.getRoot())
+        def root = Node.create(dep)
 
         timer.mark(Logger.W, "create nodes")
 
