@@ -8,11 +8,11 @@ import org.junit.Test;
  */
 class ResourceUtilsTest {
 
-    private static def SEP = File.separator
+    private static final SEP = File.separator
 
     @Test
     public void testCopyResources() {
-        String target = ".${SEP}build${SEP}test${SEP}"
+        def target = ".${SEP}build${SEP}test${SEP}"
         def path = new File(target).absolutePath
         println path
 

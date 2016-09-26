@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class DependencyGenerator extends BaseGenerator {
 
-    static final def DEP  = [
+    static final DEP  = [
             "support_v4"         : [
                     'id'      : 'com.android.support:support-v4:24.1.1',
                     'fileName': 'support-v4-24.1.1.aar',
@@ -35,7 +35,7 @@ class DependencyGenerator extends BaseGenerator {
                     'children': null
             ]
     ]
-    static final def ROOT = [
+    static final ROOT = [
             DEP.recyclerview_v7
     ]
 
@@ -44,7 +44,7 @@ class DependencyGenerator extends BaseGenerator {
         DEP.recyclerview_v7.children = [DEP.support_v4, DEP.support_annotations]
     }
 
-    static def integer = new AtomicInteger()
+    static final integer = new AtomicInteger()
 
     DependencyGenerator(GMockController gmc) {
         super(gmc)

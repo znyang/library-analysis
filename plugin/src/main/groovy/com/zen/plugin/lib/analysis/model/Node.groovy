@@ -75,11 +75,6 @@ class Node {
         node
     }
 
-    void supplyInfo(LibraryAnalysisExtension ext, DependencyDictionary dictionary) {
-        DEP_DIC.clear()
-        supplyInfo(ext, dictionary, false)
-    }
-
     /**
      * TODO: 性能不佳，数据/视图未作分离
      *
@@ -90,7 +85,7 @@ class Node {
      */
     Set<String> supplyInfo(LibraryAnalysisExtension ext,
                            DependencyDictionary dictionary,
-                           boolean isParentIgnore) {
+                           boolean isParentIgnore = false) {
         def ids = new HashSet<String>()
         def info = dictionary.findDependencyInfo(id)
         def ignore = isParentIgnore | ext.isIgnore(id)
