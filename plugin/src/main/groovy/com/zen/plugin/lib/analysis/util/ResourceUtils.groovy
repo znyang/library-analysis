@@ -7,8 +7,8 @@ package com.zen.plugin.lib.analysis.util;
 
 class ResourceUtils {
 
-    static String      RESOURCE_PATH  = "/com/zen/plugin/lib/analysis/"
-    static final def   RESOURCE_FILES = [
+    static final RESOURCE_PATH  = "/com/zen/plugin/lib/analysis/"
+    static final RESOURCE_FILES = [
             "css/z/img/",
             "css/demo.css",
             "css/z/ztree.css",
@@ -26,15 +26,13 @@ class ResourceUtils {
             "js/dagre.min.js"
     ]
 
-    private static def obj            = new ResourceUtils()
+    private static obj = new ResourceUtils()
 
     private ResourceUtils() {
     }
 
     static void copyResources(String targetPath) {
-        def files = RESOURCE_FILES
-
-        files.each {
+        RESOURCE_FILES.each {
             if (it.endsWith('/')) {
                 new File(targetPath, it).mkdirs()
                 return

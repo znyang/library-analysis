@@ -8,9 +8,9 @@ import org.gradle.util.ConfigureUtil
  */
 class LibraryAnalysisExtension {
 
-    private static final String ANALYSIS_OUTPUT_PATH = "reports/zen/analysis/library"
-    private static final def    SIZE_STYLES          = ['tag-normal', 'tag-warning', 'tag-danger']
-    static final def            LAST_INDEX           = SIZE_STYLES.size() - 1
+    private static final ANALYSIS_OUTPUT_PATH = "reports/zen/analysis/library"
+    private static final SIZE_STYLES          = ['tag-normal', 'tag-warning', 'tag-danger']
+    private static final LAST_INDEX           = SIZE_STYLES.size() - 1
 
     final Set<String> cacheIgnoreIds = new HashSet<>()
 

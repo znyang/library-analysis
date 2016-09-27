@@ -33,32 +33,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
     @Override
     protected void generate(Project project) throws IOException {
-        String output = prepareOutputPath()
-        ResourceUtils.copyResources(output)
-
-        def timer = new Timer()
-
-        ResolutionResult resolutionResult = configuration.getIncoming().getResolutionResult()
-        resolutionResult.allComponents.each {
-            println "----------"
-            println "${it.id} ?? ${it.selectionReason.description}";
-            it.dependents.each {
-                dep ->
-                    println dep
-            }
-        }
-        RenderableDependency dep = new RenderableModuleResult(resolutionResult.getRoot())
-        Node root = Node.create(dep)
-
-        timer.mark(Logger.W, "create nodes")
-
-        DependencyDictionary dictionary = new DependencyDictionary(configuration.getIncoming().getFiles())
-        root.supplyInfo(extension, dictionary)
-
-        timer.mark(Logger.W, "supply info")
-
-        def result = new HtmlRenderer(output).render(root)
-        println "output result: ${result}"
+        outputHtml()
 
         if (extension.showTree) {
             renderer.startConfiguration(configuration)
@@ -67,9 +42,30 @@ class DependencyTreeReportTask extends AbstractReportTask {
         }
     }
 
+    private void outputHtml() {
+        def output = prepareOutputPath()
+        ResourceUtils.copyResources(output)
+
+        def timer = new Timer()
+
+        def resolutionResult = configuration.getIncoming().getResolutionResult()
+        def dep = new RenderableModuleResult(resolutionResult.getRoot())
+        def root = Node.create(dep)
+
+        timer.mark(Logger.W, "create nodes")
+
+        def dictionary = new DependencyDictionary(configuration.getIncoming().getFiles())
+        root.supplyInfo(extension, dictionary)
+
+        timer.mark(Logger.W, "supply info")
+
+        def result = new HtmlRenderer(output).render(root)
+        println "output result: ${result}"
+    }
+
     private String prepareOutputPath() {
         def path = "${project.buildDir}/${extension.outputPath}/${configuration.name}"
-        File file = new File(path)
+        def file = new File(path)
         if (!file.exists()) {
             file.mkdirs()
         }

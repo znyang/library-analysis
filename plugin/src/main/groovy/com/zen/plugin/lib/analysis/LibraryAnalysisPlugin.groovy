@@ -12,9 +12,9 @@ import org.gradle.api.Project
  * 3. 共用标识
  */
 class LibraryAnalysisPlugin implements Plugin<Project> {
-    private static final def EXTENSION_NAME = 'libReport'
-    private static final def BASE_GROUP     = 'reporting'
-    private static final def TASK_PREFIX    = 'libReport'
+    private static final EXTENSION_NAME = 'libReport'
+    private static final BASE_GROUP     = 'reporting'
+    private static final TASK_PREFIX    = 'libReport'
 
     private LibraryAnalysisExtension extension
 
