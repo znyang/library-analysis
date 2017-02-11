@@ -20,10 +20,7 @@ sourceSets {
     }
 }
 
-repositories {
-    jcenter()
-    mavenCentral()
-}
+repositories repoProvider
 
 dependencies {
     compile gradleApi()

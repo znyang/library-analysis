@@ -6,6 +6,7 @@ before_install:
   - chmod +x gradlew
   - export JAVA8_HOME=/usr/lib/jvm/java-8-oracle
   - export JAVA_HOME=$JAVA8_HOME
+  - export ENV_CI=true
 
 script: ./gradlew :plugin:clean :plugin:build :plugin:jacocoReport --info --stacktrace
 

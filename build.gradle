@@ -1,13 +1,25 @@
 allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
+    ext {
+        isEnvCi = System.getenv('ENV_CI')
+        buildToolsVersion = isEnvCi ? "22.0.1" : "25.0.0"
+        repoProvider = isEnvCi ? {
+            jcenter()
+            maven { url "https://jitpack.io" }
+        } : {
+            maven {
+                url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            }
+            jcenter()
+            maven { url "https://jitpack.io" }
+        }
     }
+
+    repositories repoProvider
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.12'
-    distributionUrl = 'http://services.gradle.org/distributions/gradle-2.10-all.zip'
+    gradleVersion = '3.1'
+    distributionUrl = 'http://services.gradle.org/distributions/gradle-3.1-all.zip'
 }
 
 task clean(type: Delete) {
