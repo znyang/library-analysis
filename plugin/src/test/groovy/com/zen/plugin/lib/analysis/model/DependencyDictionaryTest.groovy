@@ -12,7 +12,7 @@ import org.junit.Test
 
 class DependencyDictionaryTest extends GMockTestCase {
 
-    static def fileInfo = [
+    static final FILE_INFO = [
             [
                     'id'  : "com.android.support:appcompat-v7:22.2",
                     'name': "appcompat-v7-22.2.0.aar",
@@ -38,7 +38,7 @@ class DependencyDictionaryTest extends GMockTestCase {
 
     Set<File> prepareFiles() {
         Set<File> files = new HashSet<>()
-        fileInfo.each {
+        FILE_INFO.each {
             File f = mock(File)
             f.size().returns(it.size).stub()
             f.getPath().returns(it.path.replace('\\', File.separator)).stub()
@@ -73,7 +73,7 @@ class DependencyDictionaryTest extends GMockTestCase {
             prePlay()
 
             assert dictionary != null
-            fileInfo.eachWithIndex { depend, index ->
+            FILE_INFO.eachWithIndex { depend, index ->
                 def info = dictionary.findDependencyInfo(depend.id)
                 assert info.type.equals('aar')
                 assert info.size == depend.size

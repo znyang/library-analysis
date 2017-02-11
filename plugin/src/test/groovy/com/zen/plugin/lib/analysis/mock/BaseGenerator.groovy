@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class BaseGenerator {
 
-    final protected GMockController gmc
+    protected final GMockController gmc
 
     BaseGenerator(GMockController gmc) {
         this.gmc = gmc

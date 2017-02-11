@@ -14,8 +14,8 @@ import org.gradle.api.file.FileCollection
 
 class DependencyDictionary {
 
-    static final def                  SEPARATOR    = File.separator
-    static final def                  BUILD_DIR    = "build${SEPARATOR}outputs${SEPARATOR}aar${SEPARATOR}"
+    static final                      SEPARATOR    = File.separator
+    static final                      BUILD_DIR    = "build${SEPARATOR}outputs${SEPARATOR}aar${SEPARATOR}"
     final FileCollection              fileCollection
           Set<File>                   files
     final Map<String, File>           cacheFiles   = new HashMap<>()

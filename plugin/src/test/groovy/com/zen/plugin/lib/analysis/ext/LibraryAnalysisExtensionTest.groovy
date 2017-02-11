@@ -8,7 +8,7 @@ import org.junit.Test
  */
 class LibraryAnalysisExtensionTest {
 
-    static final def data = [
+    static final DATA = [
             [
                     'size' : 9 * 1024,
                     'style': 'tag-normal'
@@ -23,7 +23,7 @@ class LibraryAnalysisExtensionTest {
             ]
     ]
 
-    static final def IGNORE = [
+    static final IGNORE = [
             "com.android.support": [
                     ['target': 'com.android.support:support-v4:22.2.0', 'result': true],
                     ['target': 'com.squareup.retrofit2:retrofit:2.1.0', 'result': false]
@@ -32,7 +32,7 @@ class LibraryAnalysisExtensionTest {
 
     @Test
     public void testGetSIzeStyle() throws Exception {
-        data.each {
+        DATA.each {
             assert new LibraryAnalysisExtension().getSizeTag(it.size).equals(it.style)
         }
     }
