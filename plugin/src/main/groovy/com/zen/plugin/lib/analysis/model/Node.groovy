@@ -160,7 +160,7 @@ class Node {
 
         // Android package name
         def packageName = null
-        if (info?.type?.equals('aar')) {
+        if (info?.type?.equals('aar') && checker) {
             packageName = "<span class='tag' style='color:#999'>${checker.parseModuleName(info.id, info.file)}</span>"
         }
 
