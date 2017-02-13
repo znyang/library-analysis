@@ -69,6 +69,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
         }
 
         def result = new HtmlRenderer(output).render(root, list, msg)
+        if (msg && !msg.isEmpty()) {
+            println msg
+        }
         println "output result: ${result}"
     }
 
@@ -77,7 +80,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
         dictionary.cacheInfoMap.each {
             key, value ->
                 def pkgName = checker.parseModuleName(key, value.file)
-                list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName, value.type, ""))
+                def isRepeat = checker.isRepeatPackage(pkgName)
+                list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName,
+                            value.type, isRepeat ? "package name repeat" : "", isRepeat ? "danger" : ""))
         }
         list.sortModules()
         list
