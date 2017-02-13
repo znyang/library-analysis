@@ -31,8 +31,8 @@ public class PackageChecker {
         Logger.D?.log("package name parse ${aar.name}")
 
         def path = aar.absolutePath
-        if (sModuleNames.containsKey(path)) {
-            return sModuleNames.get(path)
+        if (sModuleNames.containsKey(module)) {
+            return sModuleNames.get(module)
         }
 
         ZipFile zipFile = new ZipFile(path)
@@ -61,31 +61,41 @@ public class PackageChecker {
             putModuleIfRepeat(name, module)
         }
 
-        sModuleNames.put(path, name)
+        sModuleNames.put(module, name)
         Logger.D?.log("package name find result: ${module} -> ${name}")
         return name
     }
 
     private void putModuleIfRepeat(String packageName, String module) {
-        if (sModuleNames.values().contains(packageName)) {
+        Map.Entry<String, String> result = sModuleNames.find {
+            key, value ->
+                value.equals(packageName)
+        }
+        if (result) {
             if (sModuleRepeat.containsKey(packageName)) {
                 def value = sModuleRepeat.get(packageName)
+                Logger.D?.log("repeat: ${value}")
                 value += ",${module}"
+                Logger.D?.log("repeat add to: ${value}")
                 sModuleRepeat.put(packageName, value)
             } else {
-                sModuleRepeat.put(packageName, module)
+                sModuleRepeat.put(packageName, "${result.key},${module}")
             }
         }
+    }
+
+    public boolean isRepeatPackage(String pkgName) {
+        return sModuleRepeat.get(pkgName)
     }
 
     public String outputPackageRepeatList() {
         def builder = new StringBuilder();
         if (!sModuleRepeat.isEmpty()) {
             def enter = "\r\n";
-            builder.append("Package Name Repeat List:").append(enter)
+            builder.append("WARNING: Package Name Repeat!!!").append(enter)
             sModuleRepeat.each {
                 key, value ->
-                    builder.append(key).append("use in [${value}]").append(enter)
+                    builder.append(key).append(" use in [${value}]").append(enter)
             }
         }
         builder.toString()

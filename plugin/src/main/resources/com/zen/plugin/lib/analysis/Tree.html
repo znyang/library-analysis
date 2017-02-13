@@ -37,7 +37,7 @@
     </div>
     <div class="col-md-8">
         <h3>Module List</h3>
-        <p>%output_msg%</p>
+        <p style="color:#f00;">%output_msg%</p>
         <table class="col-md-8 table">
             <thead>
             <tr>
@@ -49,7 +49,7 @@
             </tr>
             </thead>
             <tbody data-bind="foreach: data.modules">
-            <tr>
+            <tr data-bind="css: level">
                 <td data-bind="text: type"></td>
                 <td data-bind="text: name"></td>
                 <td data-bind="text: size"></td>
