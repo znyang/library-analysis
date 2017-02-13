@@ -3,6 +3,7 @@ package com.zen.plugin.lib.analysis.model
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.mock.DependencyGenerator
 import com.zen.plugin.lib.analysis.util.Logger
+import com.zen.plugin.lib.analysis.util.PackageChecker
 import org.gmock.GMockTestCase
 import org.junit.Before
 import org.junit.Test
@@ -40,7 +41,7 @@ class NodeTest extends GMockTestCase {
             prePlay()
 
             Node node = Node.create(root)
-            node.supplyInfo(extension, dictionary)
+            node.supplyInfo(extension, dictionary, null)
 
             node.children.each {
                 checkFileSize(it)

@@ -14,14 +14,14 @@ import org.gradle.api.file.FileCollection
 
 class DependencyDictionary {
 
-    static final                      SEPARATOR    = File.separator
-    static final                      BUILD_DIR    = "build${SEPARATOR}outputs${SEPARATOR}aar${SEPARATOR}"
-    final FileCollection              fileCollection
-          Set<File>                   files
-    final Map<String, File>           cacheFiles   = new HashMap<>()
+    static final SEPARATOR = File.separator
+    static final BUILD_DIR = "build${SEPARATOR}outputs${SEPARATOR}aar${SEPARATOR}"
+    final FileCollection fileCollection
+    Set<File> files
+    final Map<String, File> cacheFiles = new HashMap<>()
     final Map<String, DependencyInfo> cacheInfoMap = new HashMap<>()
-          long                        totalSize    = 0L
-          long                        maxSize      = 0L
+    long totalSize = 0L
+    long maxSize = 0L
 
     DependencyDictionary(FileCollection fileCollection) {
         this.fileCollection = fileCollection
@@ -45,7 +45,12 @@ class DependencyDictionary {
         }
     }
 
-    File findDependency(String dependencyId) {
+    /**
+     * 根据依赖库ID查找本地文件
+     * @param dependencyId
+     * @return
+     */
+    File findDependencyFile(String dependencyId) {
         if (cacheFiles.containsKey(dependencyId)) {
             return cacheFiles.get(dependencyId)
         }
@@ -82,10 +87,15 @@ class DependencyDictionary {
         result
     }
 
+    /**
+     * 根据依赖库ID获取相关信息
+     * @param dependencyId
+     * @return
+     */
     DependencyInfo findDependencyInfo(String dependencyId) {
         def info = cacheInfoMap.get(dependencyId)
         if (info == null) {
-            File file = findDependency(dependencyId)
+            File file = findDependencyFile(dependencyId)
             info = putCache(dependencyId, file)
         }
         info
@@ -95,7 +105,7 @@ class DependencyDictionary {
         if (file == null) {
             return null
         }
-        DependencyInfo info = new DependencyInfo(id, file.size(), FileUtils.getFileType(file.name))
+        DependencyInfo info = new DependencyInfo(id, file.size(), FileUtils.getFileType(file.name), file)
         cacheInfoMap.put(id, info)
         info
     }

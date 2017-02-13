@@ -21,7 +21,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.1.2'
+        classpath 'com.github.znyang:library-analysis:0.1.3'
     }
 }
 
@@ -44,4 +44,10 @@ gradle libReportCompile
 
 **/build/reports/zen/analysis/library/compile/Tree.html**
 
-![screenshot](./image/tree2.png)
+#### Module List
+
+![screenshot](./image/module-list.jpg)
+
+#### Dependencies Tree
+
+![screenshot](./image/dependencies.jpg)

@@ -1,6 +1,7 @@
 package com.zen.plugin.lib.analysis.model
 
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
+import com.zen.plugin.lib.analysis.util.PackageChecker
 import com.zen.plugin.lib.analysis.util.FileUtils
 import com.zen.plugin.lib.analysis.util.Logger
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
@@ -12,15 +13,13 @@ import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependenc
  * @version 2016/7/8
  */
 class Node {
-    String     id
-    String     name
-    boolean    open
+    String id
+    String name
+    boolean open
     List<Node> children
-    long       fileSize
-    long       totalSize
-    String     iconSkin
-
-    static Map<String, Set<String>> DEP_DIC = new HashMap<>()
+    long fileSize
+    long totalSize
+    String iconSkin
 
     void addNode(Node node) {
         if (node == null) {
@@ -75,27 +74,41 @@ class Node {
         node
     }
 
+    Set<String> supplyInfo(LibraryAnalysisExtension ext,
+                           DependencyDictionary dictionary,
+                           PackageChecker checker) {
+        supplyInfo(null, ext, dictionary, checker);
+    }
+
     /**
+     * 将依赖树与依赖字典做匹配，计算出每个节点的文件大小总和
+     *
      * TODO: 性能不佳，数据/视图未作分离
      *
+     * @param dependencies 存放每个依赖节点的子节点集合信息
      * @param ext
      * @param dictionary
      * @param isParentIgnore
-     * @return
+     * @return 当前+子节点的dependency id集合。如果节点被忽略，返回空
      */
-    Set<String> supplyInfo(LibraryAnalysisExtension ext,
+    Set<String> supplyInfo(Map<String, Set<String>> dependencies,
+                           LibraryAnalysisExtension ext,
                            DependencyDictionary dictionary,
+                           PackageChecker checker,
                            boolean isParentIgnore = false) {
+        if (!dependencies) {
+            dependencies = new HashMap<>()
+        }
+
         def ids = new HashSet<String>()
         def info = dictionary.findDependencyInfo(id)
         def ignore = isParentIgnore | ext.isIgnore(id)
-        def hasInDic = DEP_DIC.containsKey(id)
-        def idsInDic = DEP_DIC.get(id)
+        def idsInDic = dependencies.get(id)
 
         ids.add(id)
         children?.each {
-            def result = it.supplyInfo(ext, dictionary, ignore)
-            if (hasInDic) {
+            def result = it.supplyInfo(dependencies, ext, dictionary, checker, ignore)
+            if (idsInDic) {
                 ids.addAll(idsInDic)
             } else {
                 ids.addAll(result)
@@ -105,8 +118,8 @@ class Node {
             ids.clear()
         }
 
-        if (!hasInDic) {
-            DEP_DIC.put(id, ids)
+        if (!idsInDic) {
+            dependencies.put(id, ids)
         } else {
             ignore |= idsInDic.isEmpty()
             ids = idsInDic
@@ -128,7 +141,7 @@ class Node {
 
         def txtSize = null
         def txtType = null
-        if (info != null) {
+        if (info) {
             def styleSize = ignore ? "tag-ignore" : ext.getSizeTag(info.size)
             def styleType = "jar".equals(info.type) ? 'type_jar' : 'type_aar'
 
@@ -144,7 +157,15 @@ class Node {
             styleTotalSize = "class='tag' style='color:#fff;background-color:${genColorCode(totalSize, dictionary.totalSize, dictionary.getFiles().size())}'"
         }
         def txtTotalSize = "<span ${styleTotalSize}>${FileUtils.convertFileSize(totalSize)}</span>"
-        name = "${txtTotalSize}${txtSize ?: ''}${name}"
+
+        // Android package name
+        def packageName = null
+        if (info?.type?.equals('aar') && checker) {
+            packageName = "<span class='tag' style='color:#999'>${checker.parseModuleName(info.id, info.file)}</span>"
+        }
+
+        // 累计依赖库大小 + 当前依赖库大小 + 依赖库名称
+        name = "${txtTotalSize}${txtSize ?: ''} ${name} ${packageName ?: ''}"
 
         ids
     }
