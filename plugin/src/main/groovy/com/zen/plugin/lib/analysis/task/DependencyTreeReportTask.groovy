@@ -4,16 +4,17 @@ import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.model.DependencyDictionary
 import com.zen.plugin.lib.analysis.model.Node
 import com.zen.plugin.lib.analysis.render.HtmlRenderer
+import com.zen.plugin.lib.analysis.render.OutputModuleList
+import com.zen.plugin.lib.analysis.util.FileUtils
+import com.zen.plugin.lib.analysis.util.PackageChecker
 import com.zen.plugin.lib.analysis.util.Logger
 import com.zen.plugin.lib.analysis.util.ResourceUtils
 import com.zen.plugin.lib.analysis.util.Timer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.artifacts.result.ResolutionResult
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.ReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer
-import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleResult
 
 /**
@@ -23,7 +24,7 @@ import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleRes
 class DependencyTreeReportTask extends AbstractReportTask {
     def renderer = new AsciiDependencyReportRenderer()
 
-    Configuration            configuration
+    Configuration configuration
     LibraryAnalysisExtension extension
 
     @Override
@@ -54,13 +55,32 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         timer.mark(Logger.W, "create nodes")
 
+        // 通过依赖文件创建依赖字典
+        def packageChecker = new PackageChecker()
         def dictionary = new DependencyDictionary(configuration.getIncoming().getFiles())
-        root.supplyInfo(extension, dictionary)
+        root.supplyInfo(extension, dictionary, packageChecker)
 
         timer.mark(Logger.W, "supply info")
 
-        def result = new HtmlRenderer(output).render(root)
+        def msg = packageChecker.outputPackageRepeatList()
+        def list = outputModuleList(dictionary, packageChecker)
+        list.modules.each {
+            Logger.D?.log("module: ${it.name}")
+        }
+
+        def result = new HtmlRenderer(output).render(root, list, msg)
         println "output result: ${result}"
+    }
+
+    static OutputModuleList outputModuleList(DependencyDictionary dictionary, PackageChecker checker) {
+        OutputModuleList list = new OutputModuleList()
+        dictionary.cacheInfoMap.each {
+            key, value ->
+                def pkgName = checker.parseModuleName(key, value.file)
+                list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName, value.type, ""))
+        }
+        list.sortModules()
+        list
     }
 
     private String prepareOutputPath() {

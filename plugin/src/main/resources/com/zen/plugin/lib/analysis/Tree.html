@@ -5,6 +5,8 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/demo.css" type="text/css">
     <link rel="stylesheet" href="css/z/ztree.css" type="text/css">
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
     <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.ztree.core.min.js"></script>
     <SCRIPT LANGUAGE="JavaScript">
@@ -26,10 +28,63 @@
     </SCRIPT>
 </HEAD>
 <BODY>
-<div>
-    <div class="ztree">generate by <a href="https://github.com/znyang/library-analysis">Library Analysis Gradle Plugin</a></div>
-    <p class="ztree">注：为节省数据量，含有子节点的库若已经出现过了，就不再显示其子节点。</p>
-    <ul id="dep" class="ztree"></ul>
+
+<h5 class="text-right">Generate by <a type="button" class="btn btn-link" href="https://github.com/znyang/library-analysis">Library Analysis Gradle Plugin</a></h5>
+
+<div class="row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+        <h3>Module List</h3>
+        <p>%output_msg%</p>
+        <table class="col-md-8 table">
+            <thead>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Size</th>
+                <th>Package Name(for aar)</th>
+                <th>Remark</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: data.modules">
+            <tr>
+                <td data-bind="text: type"></td>
+                <td data-bind="text: name"></td>
+                <td data-bind="text: size"></td>
+                <td data-bind="text: pkgName"></td>
+                <td data-bind="text: extInfo"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<div class="row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+        <h3 >Dependencies Tree</h3>
+        <p class="ztree">注：为节省数据量，含有子节点的库若已经出现过了，就不再显示其子节点。</p>
+        <ul id="dep" class="ztree"></ul>
+    </div>
+</div>
+
+
+
+<script src="http://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="http://cdn.bootcss.com/knockout/3.4.0/knockout-min.js"></script>
+
+<script type="text/javascript">
+    ko.applyBindings(
+            {
+                data:%data%
+            }
+    )
+    ;
+</script>
+
 </BODY>
 </HTML>

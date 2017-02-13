@@ -6,8 +6,9 @@ allprojects {
             jcenter()
             maven { url "https://jitpack.io" }
         } : {
+            maven { url "file:///c:/repo" }
             maven {
-                url 'http://maven.aliyun.com/nexus/content/groups/public/'
+                url 'http://nexus.sdp.nd/nexus/content/groups/android-public/'
             }
             jcenter()
             maven { url "https://jitpack.io" }
