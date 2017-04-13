@@ -34,7 +34,7 @@ class Node {
     }
 
     boolean hasChildren() {
-        return children == null || children.isEmpty();
+        return children != null && !children.isEmpty()
     }
 
     static Node create(RenderableDependency dep) {
