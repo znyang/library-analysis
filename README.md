@@ -44,15 +44,11 @@ gradle libReportCompile
 
 **/build/reports/zen/analysis/library/compile/Tree.html**
 
-#### Module List
-
 ![screenshot](./image/module-list.jpg)
-
-#### Dependencies Tree
 
 ![screenshot](./image/dependencies.jpg)
 
-#### Dependencies Tree .txt
+**/build/reports/zen/analysis/library/compile/Tree.txt**
 
 ```
   7.741 MB	       0 B	\--- project :analysis-sample
@@ -70,4 +66,5 @@ gradle libReportCompile
  38.472 KB	 38.472 KB	 	|	 	\--- com.android.support:support-vector-drawable:24.1.1
     282 KB	    282 KB	 	+--- com.android.support:recyclerview-v7:24.1.1
  43.505 KB	 22.229 KB	 	+--- com.android.support:cardview-v7:24.1.1
+ ...
 ```
