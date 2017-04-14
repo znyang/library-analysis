@@ -47,7 +47,7 @@ public class TextRenderer {
             mark = "\\---"
         }
 
-        builder.append(mark).append(" ${node.id}").append("\r\n")
+        builder.append(mark).append(" ${node.detail}").append("\r\n")
         if (hasChildren) {
             List<Node> children = node.children
             int size = children.size()

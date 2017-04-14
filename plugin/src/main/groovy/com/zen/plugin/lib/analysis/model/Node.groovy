@@ -20,6 +20,7 @@ class Node {
     long fileSize
     long totalSize
     String iconSkin
+    String detail
 
     void addNode(Node node) {
         if (node == null) {
@@ -54,7 +55,7 @@ class Node {
 
         Node node = new Node()
         node.setId(id)
-        node.setName(dep.getName())
+        node.setDetail(dep.getName())
         if (hasAdded && hasChildren) {
             node.iconSkin = "omit"
         }
@@ -165,7 +166,7 @@ class Node {
         }
 
         // 累计依赖库大小 + 当前依赖库大小 + 依赖库名称
-        name = "${txtTotalSize}${txtSize ?: ''} ${name} ${packageName ?: ''}"
+        name = "${txtTotalSize}${txtSize ?: ''} ${detail} ${packageName ?: ''}"
 
         ids
     }

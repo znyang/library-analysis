@@ -34,7 +34,7 @@ class HtmlRenderer {
         def html = ResourceUtils.getTemplateFileContent("Tree.html")
                 .replace("%output_msg%", msg)
                 .replace("%data%", modules)
-                .replace("%title%", root.getName())
+                .replace("%title%", root.id)
                 .replace("%nodes%", json)
         target.setText(html, "UTF-8")
 
