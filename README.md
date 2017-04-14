@@ -21,7 +21,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.1.6'
+        classpath 'com.github.znyang:library-analysis:0.1.7'
     }
 }
 
@@ -51,3 +51,23 @@ gradle libReportCompile
 #### Dependencies Tree
 
 ![screenshot](./image/dependencies.jpg)
+
+#### Dependencies Tree .txt
+
+```
+  7.741 MB	       0 B	\--- project :analysis-sample
+  1.545 MB	    301 KB	 	+--- com.android.support:design:24.1.1
+       0 B	  1.252 MB	 	|	+--- com.android.support:support-v4:24.1.1
+       0 B	 21.275 KB	 	|	|	\--- com.android.support:support-annotations:24.1.1
+    303 KB	    282 KB	 	|	+--- com.android.support:recyclerview-v7:24.1.1
+       0 B	  1.252 MB	 	|	|	+--- com.android.support:support-v4:24.1.1
+ 21.275 KB	 21.275 KB	 	|	|	\--- com.android.support:support-annotations:24.1.1
+    978 KB	    928 KB	 	|	\--- com.android.support:appcompat-v7:24.1.1
+ 49.837 KB	 11.365 KB	 	|	 	+--- com.android.support:animated-vector-drawable:24.1.1
+ 38.472 KB	 38.472 KB	 	|	 	|	\--- com.android.support:support-vector-drawable:24.1.1
+       0 B	  1.252 MB	 	|	 	|	 	\--- com.android.support:support-v4:24.1.1
+       0 B	  1.252 MB	 	|	 	+--- com.android.support:support-v4:24.1.1
+ 38.472 KB	 38.472 KB	 	|	 	\--- com.android.support:support-vector-drawable:24.1.1
+    282 KB	    282 KB	 	+--- com.android.support:recyclerview-v7:24.1.1
+ 43.505 KB	 22.229 KB	 	+--- com.android.support:cardview-v7:24.1.1
+```
