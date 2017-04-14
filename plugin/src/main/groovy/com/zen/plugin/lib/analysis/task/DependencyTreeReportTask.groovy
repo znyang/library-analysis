@@ -5,9 +5,9 @@ import com.zen.plugin.lib.analysis.model.DependencyDictionary
 import com.zen.plugin.lib.analysis.model.Node
 import com.zen.plugin.lib.analysis.render.HtmlRenderer
 import com.zen.plugin.lib.analysis.render.OutputModuleList
-import com.zen.plugin.lib.analysis.util.FileUtils
-import com.zen.plugin.lib.analysis.util.PackageChecker
+import com.zen.plugin.lib.analysis.render.TextRenderer
 import com.zen.plugin.lib.analysis.util.Logger
+import com.zen.plugin.lib.analysis.util.PackageChecker
 import com.zen.plugin.lib.analysis.util.ResourceUtils
 import com.zen.plugin.lib.analysis.util.Timer
 import org.gradle.api.Project
@@ -73,6 +73,8 @@ class DependencyTreeReportTask extends AbstractReportTask {
             println msg
         }
         println "output result: ${result}"
+
+        new TextRenderer(output).render(root, list, msg)
     }
 
     static OutputModuleList outputModuleList(DependencyDictionary dictionary, PackageChecker checker) {
