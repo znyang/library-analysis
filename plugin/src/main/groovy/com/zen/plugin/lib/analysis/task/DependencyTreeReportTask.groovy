@@ -1,8 +1,9 @@
 package com.zen.plugin.lib.analysis.task
 
+import com.zen.plugin.lib.analysis.convert.NodeConvert
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
-import com.zen.plugin.lib.analysis.model.DependencyDictionary
-import com.zen.plugin.lib.analysis.model.Node
+import com.zen.plugin.lib.analysis.model.FileDictionary
+import com.zen.plugin.lib.analysis.model.Library
 import com.zen.plugin.lib.analysis.render.HtmlRenderer
 import com.zen.plugin.lib.analysis.render.OutputModuleList
 import com.zen.plugin.lib.analysis.render.TextRenderer
@@ -51,14 +52,16 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         def resolutionResult = configuration.getIncoming().getResolutionResult()
         def dep = new RenderableModuleResult(resolutionResult.getRoot())
-        def root = Node.create(dep)
+//        def root = Node.create(dep)
 
-        timer.mark(Logger.W, "create nodes")
+//        timer.mark(Logger.W, "create nodes")
 
         // 通过依赖文件创建依赖字典
         def packageChecker = new PackageChecker()
-        def dictionary = new DependencyDictionary(configuration.getIncoming().getFiles())
-        root.supplyInfo(extension, dictionary, packageChecker)
+        def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
+//        root.supplyInfo(extension, dictionary, packageChecker)
+        def rootLib = Library.create(dep, dictionary)
+        def root = NodeConvert.convert(rootLib, NodeConvert.ConvertArgs.with(dictionary, extension, packageChecker))
 
         timer.mark(Logger.W, "supply info")
 
@@ -77,7 +80,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
         new TextRenderer(output).render(root, list, msg)
     }
 
-    static OutputModuleList outputModuleList(DependencyDictionary dictionary, PackageChecker checker) {
+    static OutputModuleList outputModuleList(FileDictionary dictionary, PackageChecker checker) {
         OutputModuleList list = new OutputModuleList()
         dictionary.cacheInfoMap.each {
             key, value ->

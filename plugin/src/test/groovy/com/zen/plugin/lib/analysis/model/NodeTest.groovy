@@ -3,7 +3,6 @@ package com.zen.plugin.lib.analysis.model
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.mock.DependencyGenerator
 import com.zen.plugin.lib.analysis.util.Logger
-import com.zen.plugin.lib.analysis.util.PackageChecker
 import org.gmock.GMockTestCase
 import org.junit.Before
 import org.junit.Test
@@ -32,7 +31,7 @@ class NodeTest extends GMockTestCase {
     }
 
     private void prePlay() {
-        dictionary = new DependencyDictionary(fileCollection)
+        dictionary = new FileDictionary(fileCollection)
     }
 
     @Test

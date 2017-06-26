@@ -12,18 +12,18 @@ import org.gradle.api.file.FileCollection
  * @version 2016/9/10
  */
 
-class DependencyDictionary {
+class FileDictionary {
 
     static final SEPARATOR = File.separator
     static final BUILD_DIR = "build${SEPARATOR}outputs${SEPARATOR}aar${SEPARATOR}"
     final FileCollection fileCollection
     Set<File> files
     final Map<String, File> cacheFiles = new HashMap<>()
-    final Map<String, DependencyInfo> cacheInfoMap = new HashMap<>()
+    final Map<String, FileInfo> cacheInfoMap = new HashMap<>()
     long totalSize = 0L
     long maxSize = 0L
 
-    DependencyDictionary(FileCollection fileCollection) {
+    FileDictionary(FileCollection fileCollection) {
         this.fileCollection = fileCollection
         computeTotalSize()
     }
@@ -92,7 +92,7 @@ class DependencyDictionary {
      * @param dependencyId
      * @return
      */
-    DependencyInfo findDependencyInfo(String dependencyId) {
+    FileInfo findDependencyInfo(String dependencyId) {
         def info = cacheInfoMap.get(dependencyId)
         if (info == null) {
             File file = findDependencyFile(dependencyId)
@@ -101,11 +101,11 @@ class DependencyDictionary {
         info
     }
 
-    DependencyInfo putCache(String id, File file) {
+    FileInfo putCache(String id, File file) {
         if (file == null) {
             return null
         }
-        DependencyInfo info = new DependencyInfo(id, file.size(), FileUtils.getFileType(file.name), file)
+        FileInfo info = new FileInfo(id, file.size(), FileUtils.getFileType(file.name), file)
         cacheInfoMap.put(id, info)
         info
     }

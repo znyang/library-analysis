@@ -10,7 +10,7 @@ import org.junit.Test
  * @version 2016/9/10
  */
 
-class DependencyDictionaryTest extends GMockTestCase {
+class FileDictionaryTest extends GMockTestCase {
 
     static final FILE_INFO = [
             [
@@ -64,7 +64,7 @@ class DependencyDictionaryTest extends GMockTestCase {
     }
 
     void prePlay() {
-        dictionary = new DependencyDictionary(fileCollection)
+        dictionary = new FileDictionary(fileCollection)
     }
 
     @Test

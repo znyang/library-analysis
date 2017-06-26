@@ -1,6 +1,6 @@
 allprojects {
     ext {
-        isEnvCi = true//System.getenv('ENV_CI')
+        isEnvCi = System.getenv('ENV_CI')
         buildToolsVersion = isEnvCi ? "22.0.1" : "25.0.0"
         repoProvider = isEnvCi ? {
             jcenter()

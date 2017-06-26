@@ -24,14 +24,14 @@ class Node {
 
     void addNode(Node node) {
         if (node == null) {
-            return;
+            return
         }
-        List<Node> children = getChildren();
+        List<Node> children = getChildren()
         if (children == null) {
-            children = new ArrayList<>();
-            setChildren(children);
+            children = new ArrayList<>()
+            setChildren(children)
         }
-        children.add(node);
+        children.add(node)
     }
 
     boolean hasChildren() {
@@ -50,7 +50,7 @@ class Node {
         // 是否已经加入过
         boolean hasAdded = collection.contains(dep.getId())
         Set<RenderableDependency> children = dep.getChildren()
-        boolean hasChildren = !children?.isEmpty();
+        boolean hasChildren = !children?.isEmpty()
         String id = dep.getId().toString()
 
         Node node = new Node()
@@ -76,9 +76,9 @@ class Node {
     }
 
     Set<String> supplyInfo(LibraryAnalysisExtension ext,
-                           DependencyDictionary dictionary,
+                           FileDictionary dictionary,
                            PackageChecker checker) {
-        supplyInfo(null, ext, dictionary, checker);
+        supplyInfo(null, ext, dictionary, checker)
     }
 
     /**
@@ -94,7 +94,7 @@ class Node {
      */
     Set<String> supplyInfo(Map<String, Set<String>> dependencies,
                            LibraryAnalysisExtension ext,
-                           DependencyDictionary dictionary,
+                           FileDictionary dictionary,
                            PackageChecker checker,
                            boolean isParentIgnore = false) {
         if (!dependencies) {
