@@ -20,6 +20,7 @@ class LibraryAnalysisExtension {
           boolean         showTree   = false
           boolean         log        = false
           List<String>    region     = [200 * 1024, 1024 * 1024]
+          boolean         fullTree   = false
 
     LibraryAnalysisExtension() {
         limit = new LimitSizeConfig()

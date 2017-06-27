@@ -19,13 +19,34 @@ class NodeConvert {
         FileDictionary fileDictionary
         LibraryAnalysisExtension ext
         PackageChecker checker
+        boolean isBrief = true
 
-        static ConvertArgs with(FileDictionary fileDictionary, LibraryAnalysisExtension ext, PackageChecker checker) {
-            def args = new ConvertArgs()
-            args.fileDictionary = fileDictionary
-            args.ext = ext
-            args.checker = checker
-            args
+        ConvertArgs(FileDictionary dic) {
+            this.fileDictionary = dic
+        }
+
+        static ConvertArgs get(FileDictionary dic) {
+            return new ConvertArgs(dic)
+        }
+
+        ConvertArgs fileDictionary(FileDictionary dic) {
+            this.fileDictionary = dic
+            this
+        }
+
+        ConvertArgs extension(LibraryAnalysisExtension ext) {
+            this.ext = ext
+            this
+        }
+
+        ConvertArgs checker(PackageChecker checker) {
+            this.checker = checker
+            this
+        }
+
+        ConvertArgs brief(boolean isBrief) {
+            this.isBrief = isBrief
+            this
         }
     }
 
@@ -36,20 +57,22 @@ class NodeConvert {
         Node node = new Node()
         node.id = lib.id
         node.detail = lib.name
-        if (hasAdded && !lib.children.isEmpty()) {
+        if (hasAdded && !lib.children.isEmpty() && args.isBrief) {
             node.iconSkin = "omit" // 表示简略的依赖库集合
         }
 
         if (!hasAdded) {
             cacheIds?.add(lib.id)
-
+        }
+        if (hasChildren && (!args.isBrief || !hasAdded)) {
             if (hasChildren) {
                 lib.children.each {
                     node.addNode(convert(it, args, cacheIds))
                 }
             }
         }
-        node.open = !hasAdded
+
+        node.open = !args.isBrief || !hasAdded
         node.totalSize = lib.getTotalSizeWithoutIgnore()
 
         // 存在依赖信息

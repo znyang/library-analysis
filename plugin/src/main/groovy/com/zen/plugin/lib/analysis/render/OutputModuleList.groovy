@@ -33,9 +33,14 @@ public class OutputModuleList {
         String pkgName
         String extInfo
         String level
+        // 被使用次数
+        int useCount
+        // 依赖库个数
+        int libCount
         long sizeValue
 
-        DependencyOutput(String name, long size, String pkgName, String type, String extInfo, String level = "") {
+        DependencyOutput(String name, long size, String pkgName, String type, String extInfo,
+                         int libCount = 0, int useCount = 0, String level = "") {
             this.name = name
             this.sizeValue = size
             this.size = FileUtils.convertFileSize(size)
@@ -43,6 +48,8 @@ public class OutputModuleList {
             this.type = type
             this.extInfo = extInfo
             this.level = level
+            this.libCount = libCount
+            this.useCount = useCount
         }
 
         boolean equals(o) {

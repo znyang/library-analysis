@@ -38,10 +38,12 @@ class Node {
         return children != null && !children.isEmpty()
     }
 
+    @Deprecated
     static Node create(RenderableDependency dep) {
         create(dep, new HashSet<>())
     }
 
+    @Deprecated
     static Node create(RenderableDependency dep, Set<Object> collection) {
         if (dep == null) {
             return null
@@ -75,6 +77,7 @@ class Node {
         node
     }
 
+    @Deprecated
     Set<String> supplyInfo(LibraryAnalysisExtension ext,
                            FileDictionary dictionary,
                            PackageChecker checker) {
@@ -92,6 +95,7 @@ class Node {
      * @param isParentIgnore
      * @return 当前+子节点的dependency id集合。如果节点被忽略，返回空
      */
+    @Deprecated
     Set<String> supplyInfo(Map<String, Set<String>> dependencies,
                            LibraryAnalysisExtension ext,
                            FileDictionary dictionary,
@@ -171,6 +175,7 @@ class Node {
         ids
     }
 
+    @Deprecated
     private static String genColorCode(long size, long max, int libSize) {
         if (max == 0L) {
             return "#ffdddd"

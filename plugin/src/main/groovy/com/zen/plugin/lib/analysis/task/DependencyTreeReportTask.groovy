@@ -61,12 +61,13 @@ class DependencyTreeReportTask extends AbstractReportTask {
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
-        def root = NodeConvert.convert(rootLib, NodeConvert.ConvertArgs.with(dictionary, extension, packageChecker))
+        def root = NodeConvert.convert(rootLib,
+                NodeConvert.ConvertArgs.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
 
         timer.mark(Logger.W, "supply info")
 
         def msg = packageChecker.outputPackageRepeatList()
-        def list = outputModuleList(dictionary, packageChecker)
+        def list = outputModuleList(rootLib, packageChecker)
         list.modules.each {
             Logger.D?.log("module: ${it.name}")
         }
@@ -80,6 +81,19 @@ class DependencyTreeReportTask extends AbstractReportTask {
         new TextRenderer(output).render(root, list, msg)
     }
 
+    static OutputModuleList outputModuleList(Library root, PackageChecker checker) {
+        OutputModuleList list = new OutputModuleList()
+        root.contains?.each {
+            def pkgName = checker.parseModuleName(it.id, it.file.file)
+            def isRepeat = checker.isRepeatPackage(pkgName)
+            list.addModule(new OutputModuleList.DependencyOutput(it.id, it.file.size, pkgName,
+                    it.file.type, isRepeat ? "package name repeat" : "", it.contains.size(), it.useCount, isRepeat ? "danger" : ""))
+        }
+        list.sortModules()
+        list
+    }
+
+    @Deprecated
     static OutputModuleList outputModuleList(FileDictionary dictionary, PackageChecker checker) {
         OutputModuleList list = new OutputModuleList()
         dictionary.cacheInfoMap.each {
@@ -87,7 +101,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
                 def pkgName = checker.parseModuleName(key, value.file)
                 def isRepeat = checker.isRepeatPackage(pkgName)
                 list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName,
-                            value.type, isRepeat ? "package name repeat" : "", isRepeat ? "danger" : ""))
+                        value.type, isRepeat ? "package name repeat" : "", 0, 0, isRepeat ? "danger" : ""))
         }
         list.sortModules()
         list
