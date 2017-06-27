@@ -6,6 +6,7 @@ import com.zen.plugin.lib.analysis.model.FileInfo
 import com.zen.plugin.lib.analysis.model.Library
 import com.zen.plugin.lib.analysis.model.Node
 import com.zen.plugin.lib.analysis.util.FileUtils
+import com.zen.plugin.lib.analysis.util.Logger
 import com.zen.plugin.lib.analysis.util.PackageChecker
 
 /**
@@ -15,42 +16,42 @@ import com.zen.plugin.lib.analysis.util.PackageChecker
  */
 class NodeConvert {
 
-    static class ConvertArgs {
+    static class Args {
         FileDictionary fileDictionary
         LibraryAnalysisExtension ext
         PackageChecker checker
         boolean isBrief = true
 
-        ConvertArgs(FileDictionary dic) {
+        Args(FileDictionary dic) {
             this.fileDictionary = dic
         }
 
-        static ConvertArgs get(FileDictionary dic) {
-            return new ConvertArgs(dic)
+        static Args get(FileDictionary dic) {
+            return new Args(dic)
         }
 
-        ConvertArgs fileDictionary(FileDictionary dic) {
+        Args fileDictionary(FileDictionary dic) {
             this.fileDictionary = dic
             this
         }
 
-        ConvertArgs extension(LibraryAnalysisExtension ext) {
+        Args extension(LibraryAnalysisExtension ext) {
             this.ext = ext
             this
         }
 
-        ConvertArgs checker(PackageChecker checker) {
+        Args checker(PackageChecker checker) {
             this.checker = checker
             this
         }
 
-        ConvertArgs brief(boolean isBrief) {
+        Args brief(boolean isBrief) {
             this.isBrief = isBrief
             this
         }
     }
 
-    static Node convert(Library lib, ConvertArgs args, Set<Object> cacheIds = new HashSet<>()) {
+    static Node convert(Library lib, Args args, Set<Object> cacheIds = new HashSet<>()) {
         boolean hasAdded = cacheIds.contains(lib.id)
         boolean hasChildren = !lib.children.isEmpty()
 
@@ -66,8 +67,45 @@ class NodeConvert {
         }
         if (hasChildren && (!args.isBrief || !hasAdded)) {
             if (hasChildren) {
+                // 已加入过的兄弟库
+                Set<String> ids = new HashSet<>()
+                // 已加入的节点
+                Map<String, Node> nodes = new HashMap<>()
+                // 已添加过的所有依赖
+                Set<Library> libs = new HashSet<>()
+
                 lib.children.each {
-                    node.addNode(convert(it, args, cacheIds))
+                    Node child = convert(it, args, cacheIds)
+                    node.addNode(child)
+
+                    // 当前依赖库的子库中是否包含兄弟库
+                    it.containIds.findAll {
+                        key ->
+                            // 找到重复的依赖库id集合
+                            ids.contains(key)
+                    }.each {
+                        key ->
+                            // 标记重复
+                            nodes.get(key)?.canRemove = true
+                    }
+
+                    // 当前依赖库是否已在其他库中加入过
+                    if (libs.contains(it)) {
+                        child.canRemove = true
+                    }
+
+                    ids.add(it.id)
+                    nodes.put(child.id, child)
+                    libs.add(it)
+                    libs.addAll(it.contains)
+                }
+
+                // 对可移除的库进行标记
+                node.children?.each {
+                    if (it.canRemove) {
+                        it.name = "<s>${it.name}</s>"
+                        Logger.W?.log("${it.id} is can remove.")
+                    }
                 }
             }
         }
@@ -81,7 +119,7 @@ class NodeConvert {
         def (txtTotalSize, txtSize, txtType) = outputTxt(info, lib, args, node)
 
         // Android package name
-        def packageName = parsePackageName(info, args)
+        def packageName = parsePackageName(info, args.checker)
 
         // 累计依赖库大小 + 当前依赖库大小 + 依赖库名称
         node.name = "${txtTotalSize}${txtSize ?: ''} ${node.detail} ${packageName ?: ''}"
@@ -89,15 +127,15 @@ class NodeConvert {
         node
     }
 
-    private static Object parsePackageName(FileInfo info, ConvertArgs args) {
+    private static Object parsePackageName(FileInfo info, PackageChecker checker) {
         def packageName = null
-        if (info?.type == 'aar' && args.checker) {
-            packageName = "<span class='tag' style='color:#999'>${args.checker.parseModuleName(info.id, info.file)}</span>"
+        if (info?.type == 'aar' && checker) {
+            packageName = "<span class='tag' style='color:#999'>${checker.parseModuleName(info.id, info.file)}</span>"
         }
         packageName
     }
 
-    private static List outputTxt(FileInfo info, Library lib, ConvertArgs args, Node node) {
+    private static List outputTxt(FileInfo info, Library lib, Args args, Node node) {
         def txtType = null
         def txtSize = null
 

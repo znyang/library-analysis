@@ -29,14 +29,14 @@ class DependencyTestBase extends GMockTestCase {
     }
 
     void printLibrary(Library lib, String deep) {
-        println "【U=${lib.useCount}】【C=${lib.contains.size()}】【${lib.getTotalSizeWithoutIgnore()}】${deep}${lib.name}"
+        println "【U=${lib.useCount}】【C=${lib.contains.size()}】${deep}${lib.name}"
         lib.children?.each {
             printLibrary(it, deep + "  ")
         }
     }
 
     void printNode(Node lib, String deep) {
-        println "【C=${lib.children?.size()}】${deep}${lib.name} - ${lib.detail}"
+        println "【C=${lib.getChildrenSize()}】${deep}${lib.name} - 重复？ ${lib.canRemove}"
         lib.children?.each {
             printNode(it, deep + "  ")
         }

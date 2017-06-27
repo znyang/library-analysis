@@ -15,6 +15,8 @@ class Library {
     List<Library> children = new ArrayList<>()
     // 该库包含的所有子库
     Set<Library> contains = new HashSet<>()
+    // 该库包含的所有子库的id集合
+    Set<String> containIds = new HashSet<>()
     // 被使用次数
     int useCount = 1
     // 引用的文件信息
@@ -68,6 +70,9 @@ class Library {
             it.computeContains()
             contains.add(it)
             contains.addAll(it.contains)
+
+            containIds.add(it.id)
+            containIds.addAll(it.containIds)
         }
     }
 

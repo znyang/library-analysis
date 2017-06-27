@@ -16,14 +16,14 @@ class NodeConvertTest extends DependencyTestBase {
 
             long start = System.currentTimeMillis()
             Library output = Library.create(root, fileDic)
-//            def node = NodeConvert.convert(output, NodeConvert.ConvertArgs.with(fileDic, null, new PackageChecker()))
+            def node = NodeConvert.convert(output, NodeConvert.Args.get(fileDic))
             long cost = System.currentTimeMillis() - start
 
             System.out.println("${cost}ms")
             assertTrue(cost < 500)
 
             printLibrary(output, "")
-//            printNode(node, "")
+            printNode(node, "")
         }
     }
 

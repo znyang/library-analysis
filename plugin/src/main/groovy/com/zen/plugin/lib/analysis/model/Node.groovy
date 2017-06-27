@@ -21,6 +21,8 @@ class Node {
     long totalSize
     String iconSkin
     String detail
+    // 可移除的依赖库（重复添加）
+    boolean canRemove
 
     void addNode(Node node) {
         if (node == null) {
@@ -32,6 +34,10 @@ class Node {
             setChildren(children)
         }
         children.add(node)
+    }
+
+    int getChildrenSize() {
+        children == null ? 0 : children.size()
     }
 
     boolean hasChildren() {

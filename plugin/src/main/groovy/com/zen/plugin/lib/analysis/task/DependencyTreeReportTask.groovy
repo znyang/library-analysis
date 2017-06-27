@@ -62,7 +62,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
         def root = NodeConvert.convert(rootLib,
-                NodeConvert.ConvertArgs.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
+                NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
 
         timer.mark(Logger.W, "supply info")
 
