@@ -19,6 +19,8 @@ class Library {
     Set<String> containIds = new HashSet<>()
     // 被使用次数
     int useCount = 1
+    // 被使用次数(直接依赖)
+    int useCountImmediate = 1
     // 引用的文件信息
     FileInfo file
     // 是否忽略文件大小
@@ -37,18 +39,70 @@ class Library {
     }
 
     static Library create(RenderableDependency dependency, FileDictionary dictionary) {
-        create(dependency, dictionary, new HashMap<>())
+        Map<Object, Library> libraries = new HashMap<>()
+        def lib = create(dependency, dictionary, libraries)
+
+        // 合并useCount
+        // TODO: 可优化
+        Map<String, Integer> useCounts = new HashMap<>()
+        Map<String, Integer> useCountImmediacies = new HashMap<>()
+
+        parseLibraryUseCount(lib, useCountImmediacies)
+
+        libraries.values().each {
+            def id = it.id
+
+            def count = useCounts.get(id)
+            def immediate = useCountImmediacies.get(id)
+            if (count && immediate) {
+                count += it.useCount
+                useCounts.put(id, count)
+            } else {
+                useCounts.put(id, it.useCount)
+            }
+        }
+
+        libraries.values().each {
+            if (useCounts.containsKey(it.id)) {
+                it.useCount = useCounts.get(it.id)
+            }
+            if (useCountImmediacies.containsKey(it.id)) {
+                it.useCountImmediate = useCountImmediacies.get(it.id)
+            }
+        }
+
+        lib
     }
+
+    static void parseLibraryUseCount(Library library, Map<String, Integer> useCounts) {
+        String id = library.id
+        boolean hasAdded = useCounts.containsKey(id)
+        if (!hasAdded) {
+            useCounts.put(id, 1)
+        } else {
+            useCounts.put(id, useCounts.get(id) + 1)
+        }
+
+        if (!hasAdded && !library.children.isEmpty()) {
+            library.children.each {
+                parseLibraryUseCount(it, useCounts)
+            }
+        }
+    }
+
 
     static Library create(RenderableDependency dependency, FileDictionary dictionary, Map<Object, Library> cache) {
         String id = dependency.id
-        Library lib = cache.get(id)
-        if (lib) {
-            lib.addUseCount()
-            return lib
+        String name = dependency.name
+//        Library lib = cache.get(id)
+        Library nLib = cache.get(name)
+
+        if (nLib) {
+            nLib.addUseCount()
+            return nLib
         } else {
-            def result = new Library(dependency.name, id)
-            cache.put(id, result)
+            def result = new Library(name, id)
+            cache.put(name, result)
 
             result.file = dictionary?.findDependencyInfo(id)
             dependency.children.each {

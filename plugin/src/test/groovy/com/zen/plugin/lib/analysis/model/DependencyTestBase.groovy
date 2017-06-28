@@ -29,7 +29,7 @@ class DependencyTestBase extends GMockTestCase {
     }
 
     void printLibrary(Library lib, String deep) {
-        println "【U=${lib.useCount}】【C=${lib.contains.size()}】${deep}${lib.name}"
+        println "【U=${lib.useCount}】【C=${lib.contains.size()}】${deep}${lib.name} - ${lib.useCountImmediate}"
         lib.children?.each {
             printLibrary(it, deep + "  ")
         }

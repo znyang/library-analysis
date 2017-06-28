@@ -12,23 +12,42 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class DependencyGenerator extends BaseGenerator {
 
-    static final DEP  = [
-            "support_v4"         : [
+    static final DEP = [
+            "support_v4"            : [
                     'id'      : 'com.android.support:support-v4:24.1.1',
+                    'name'    : 'com.android.support:support-v4:24.1.1',
                     'fileName': 'support-v4-24.1.1.aar',
                     'file'    : 'D:\\.gradle\\caches\\modules-2\\files-2.1\\com.android.support\\support-v4\\24.1.1\\57c006a017aa2cbe3d32511e5ac28ee76cf9f51b\\support-v4-24.1.1.aar',
                     'size'    : 1000 * 1024,
                     'children': null
             ],
-            "recyclerview_v7"    : [
+            "support_v4_23"         : [
+                    'id'      : 'com.android.support:support-v4:24.1.1',
+                    'name'    : 'com.android.support:support-v4:23.1.1 -> 24.1.1',
+                    'fileName': 'support-v4-24.1.1.aar',
+                    'file'    : 'D:\\.gradle\\caches\\modules-2\\files-2.1\\com.android.support\\support-v4\\24.1.1\\57c006a017aa2cbe3d32511e5ac28ee76cf9f51b\\support-v4-24.1.1.aar',
+                    'size'    : 1000 * 1024,
+                    'children': null
+            ],
+            "recyclerview_v7"       : [
                     'id'      : 'com.android.support:recyclerview-v7:24.1.1',
+                    'name'    : 'com.android.support:recyclerview-v7:24.1.1',
                     'fileName': 'recyclerview-v7-24.1.1.aar',
                     'file'    : 'D:\\.gradle\\caches\\modules-2\\files-2.1\\com.android.support\\recyclerview-v7\\24.1.1\\eb14224a80834c4eb124970a12e3e46d0a5d20f2\\recyclerview-v7-24.1.1.aar',
                     'size'    : 300 * 1024,
                     'children': null
             ],
-            "support_annotations": [
+            "support_annotations_23": [
                     'id'      : 'com.android.support:support-annotations:24.1.1',
+                    'name'    : 'com.android.support:support-annotations:23.1.1 -> 24.1.1',
+                    'fileName': 'support-annotations-24.1.1.jar',
+                    'file'    : 'D:\\.gradle\\caches\\modules-2\\files-2.1\\com.android.support\\support-annotations\\24.1.1\\3af19f153122737b372622fa6c81dd11a1c6b999\\support-annotations-24.1.1.jar',
+                    'size'    : 20 * 1024,
+                    'children': null
+            ],
+            "support_annotations"   : [
+                    'id'      : 'com.android.support:support-annotations:24.1.1',
+                    'name'    : 'com.android.support:support-annotations:24.1.1',
                     'fileName': 'support-annotations-24.1.1.jar',
                     'file'    : 'D:\\.gradle\\caches\\modules-2\\files-2.1\\com.android.support\\support-annotations\\24.1.1\\3af19f153122737b372622fa6c81dd11a1c6b999\\support-annotations-24.1.1.jar',
                     'size'    : 20 * 1024,
@@ -36,12 +55,13 @@ class DependencyGenerator extends BaseGenerator {
             ]
     ]
     static final ROOT = [
-            DEP.recyclerview_v7
+            DEP.recyclerview_v7, DEP.support_v4
     ]
 
     static {
+        DEP.support_v4_23.children = [DEP.support_annotations_23]
         DEP.support_v4.children = [DEP.support_annotations]
-        DEP.recyclerview_v7.children = [DEP.support_v4, DEP.support_annotations]
+        DEP.recyclerview_v7.children = [DEP.support_v4_23, DEP.support_annotations]
     }
 
     static final integer = new AtomicInteger()
@@ -64,7 +84,7 @@ class DependencyGenerator extends BaseGenerator {
         data?.each {
             RenderableDependency dependency = gmc.mock(RenderableDependency)
             dependency.getId().returns(it.id).stub()
-            dependency.getName().returns(it.id).stub()
+            dependency.getName().returns(it.name).stub()
             create(it.children, dependency)
 
             children.add(dependency)

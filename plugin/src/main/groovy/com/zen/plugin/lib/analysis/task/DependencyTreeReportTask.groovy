@@ -61,6 +61,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
+        extension.ignore.each {
+            rootLib.applyIgnoreLibrary(it)
+        }
         def root = NodeConvert.convert(rootLib,
                 NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
 
@@ -87,7 +90,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
             def pkgName = checker.parseModuleName(it.id, it.file.file)
             def isRepeat = checker.isRepeatPackage(pkgName)
             list.addModule(new OutputModuleList.DependencyOutput(it.id, it.file.size, pkgName,
-                    it.file.type, isRepeat ? "package name repeat" : "", it.contains.size(), it.useCount, isRepeat ? "danger" : ""))
+                    it.file.type, isRepeat ? "package name repeat" : "", it.contains.size(), it.useCount, it.useCountImmediate, isRepeat ? "danger" : ""))
         }
         list.sortModules()
         list
@@ -101,7 +104,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
                 def pkgName = checker.parseModuleName(key, value.file)
                 def isRepeat = checker.isRepeatPackage(pkgName)
                 list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName,
-                        value.type, isRepeat ? "package name repeat" : "", 0, 0, isRepeat ? "danger" : ""))
+                        value.type, isRepeat ? "package name repeat" : "", 0, 0, 0, isRepeat ? "danger" : ""))
         }
         list.sortModules()
         list

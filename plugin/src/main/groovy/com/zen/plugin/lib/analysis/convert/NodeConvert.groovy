@@ -51,6 +51,12 @@ class NodeConvert {
         }
     }
 
+    static setNodeCanRemove(Node node) {
+        if (node && node.id == node.detail) {
+            node.canRemove = true
+        }
+    }
+
     static Node convert(Library lib, Args args, Set<Object> cacheIds = new HashSet<>()) {
         boolean hasAdded = cacheIds.contains(lib.id)
         boolean hasChildren = !lib.children.isEmpty()
@@ -86,12 +92,14 @@ class NodeConvert {
                     }.each {
                         key ->
                             // 标记重复
-                            nodes.get(key)?.canRemove = true
+                            setNodeCanRemove(nodes.get(key))
+//                            nodes.get(key)?.canRemove = true
                     }
 
                     // 当前依赖库是否已在其他库中加入过
                     if (libs.contains(it)) {
-                        child.canRemove = true
+                        setNodeCanRemove(child)
+//                        child.canRemove = true
                     }
 
                     ids.add(it.id)
@@ -104,7 +112,7 @@ class NodeConvert {
                 node.children?.each {
                     if (it.canRemove) {
                         it.name = "<s>${it.name}</s>"
-                        Logger.W?.log("${it.id} is can remove.")
+                        Logger.D?.log("${it.id} is can remove.")
                     }
                 }
             }
