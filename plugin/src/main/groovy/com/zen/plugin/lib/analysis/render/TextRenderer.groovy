@@ -7,7 +7,7 @@ import com.zen.plugin.lib.analysis.util.FileUtils
  * @author: zen
  * date: 2017/4/13 0013.
  */
-public class TextRenderer {
+class TextRenderer {
 
 
     private String targetDir
@@ -16,7 +16,7 @@ public class TextRenderer {
         this.targetDir = target
     }
 
-    public String render(Node root, OutputModuleList list, String msg) {
+    String render(Node root, OutputModuleList list, String msg) {
         if (msg && msg.length() > 0) {
             msg = msg.replace("\r\n", "<br>")
         } else {

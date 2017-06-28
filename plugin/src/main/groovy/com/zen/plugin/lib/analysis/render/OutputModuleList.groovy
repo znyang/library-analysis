@@ -15,7 +15,7 @@ class OutputModuleList {
     void sortModules() {
         modules.sort {
             first, two ->
-                two.useCountImmediate - first.useCountImmediate
+                two.sizeValue - first.sizeValue
         }
     }
 

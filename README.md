@@ -11,6 +11,12 @@
 1. 支持大文件提醒
 2. 支持忽略部分依赖库大小（大小显示为灰色）
 3. 支持依赖节点大小统计
+4. 输出aar的PackageName以及冲突提示
+5. 输出依赖库被直接依赖次数(Used)、包含的依赖库数量(Contains)
+6. 标识可移除的依赖库（实验性功能）
+
+>可移除的依赖库<br>
+例如有这样的依赖关系：A->B->C, A->C，那么A~~->C~~
 
 ## 配置
 
@@ -21,7 +27,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.1.8'
+        classpath 'com.github.znyang:library-analysis:0.1.9'
     }
 }
 

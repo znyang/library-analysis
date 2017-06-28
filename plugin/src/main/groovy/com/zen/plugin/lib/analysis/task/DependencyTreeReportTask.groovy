@@ -61,7 +61,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
-        extension.ignore.each {
+        extension.ignore?.each {
             rootLib.applyIgnoreLibrary(it)
         }
         def root = NodeConvert.convert(rootLib,
