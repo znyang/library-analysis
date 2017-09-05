@@ -34,8 +34,11 @@ buildscript {
 apply plugin: 'com.zen.lib.analysis'
 
 libReport {
+    output = [
+        "txt", "html" // default
+    ]
     ignore = [
-            "com.android.support:support-v4"
+        "com.android.support:support-v4"
     ]
 }
 ```

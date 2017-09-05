@@ -12,11 +12,12 @@ class OutputModuleList {
 
     List<DependencyOutput> modules = new ArrayList<>()
 
-    void sortModules() {
-        modules.sort {
-            first, two ->
-                two.sizeValue - first.sizeValue
-        }
+    void sortModules(Closure closure = {
+        first, two ->
+            two.sizeValue - first.sizeValue
+    }) {
+        modules.sort(closure)
+
     }
 
     void addModule(DependencyOutput output) {

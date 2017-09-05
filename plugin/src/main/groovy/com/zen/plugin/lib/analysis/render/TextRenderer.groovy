@@ -28,6 +28,7 @@ class TextRenderer {
         builder.append(msg).append("\r\n")
 
         renderNode(builder, root, "", true)
+        showAllModules(builder, list)
 
         target.setText(builder.toString(), "UTF-8")
         target.path
@@ -73,6 +74,13 @@ class TextRenderer {
         }
         content.getChars(0, content.size(), chrs, count - content.size())
         return String.valueOf(chrs)
+    }
+
+    static void showAllModules(StringBuilder builder, OutputModuleList list) {
+        builder.append("\r\n")
+        list.modules.each {
+            builder.append('compile \'').append(it.name).append('@').append(it.type).append('\'').append("\r\n")
+        }
     }
 
 }

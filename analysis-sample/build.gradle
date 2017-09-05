@@ -6,7 +6,7 @@ buildscript {
     repositories repoProvider
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
-        classpath 'com.github.znyang:library-analysis:0.1.8'
+        classpath 'com.github.znyang:library-analysis:0.1.9-SNAPSHOT'
         classpath 'me.tatarka:gradle-retrolambda:3.2.3'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
     }
@@ -88,8 +88,11 @@ dependencies {
 }
 
 libReport {
-    log = true
-    fullTree = true
+//    log = true
+//    fullTree = true
+    output = [
+            "txt", "html"
+    ]
     ignore = [
             "com.android.support:support-v4"
     ]

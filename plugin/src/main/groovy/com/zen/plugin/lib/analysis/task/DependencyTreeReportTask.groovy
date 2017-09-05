@@ -35,6 +35,8 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
     @Override
     protected void generate(Project project) throws IOException {
+        def timer = new Timer()
+
         outputHtml()
 
         if (extension.showTree) {
@@ -42,32 +44,48 @@ class DependencyTreeReportTask extends AbstractReportTask {
             renderer.render(configuration)
             renderer.completeConfiguration(configuration)
         }
+
+        timer.mark(Logger.W, "${getName()} total")
     }
 
     private void outputHtml() {
+        def timer = new Timer()
+
         def output = prepareOutputPath()
         ResourceUtils.copyResources(output)
 
-        def timer = new Timer()
+        timer.mark(Logger.W, "copy resources")
 
         def resolutionResult = configuration.getIncoming().getResolutionResult()
         def dep = new RenderableModuleResult(resolutionResult.getRoot())
+
+        timer.mark(Logger.W, "get dependencies")
+
 //        def root = Node.create(dep)
 
 //        timer.mark(Logger.W, "create nodes")
 
         // 通过依赖文件创建依赖字典
         def packageChecker = new PackageChecker()
+
+        timer.mark(Logger.W, "create checker")
+
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
+
+        timer.mark(Logger.W, "create dictionary")
+
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
+
+        timer.mark(Logger.W, "create root library")
+
         extension.ignore?.each {
             rootLib.applyIgnoreLibrary(it)
         }
         def root = NodeConvert.convert(rootLib,
                 NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
 
-        timer.mark(Logger.W, "supply info")
+        timer.mark(Logger.W, "create root node")
 
         def msg = packageChecker.outputPackageRepeatList()
         def list = outputModuleList(rootLib, packageChecker)
@@ -75,13 +93,24 @@ class DependencyTreeReportTask extends AbstractReportTask {
             Logger.D?.log("module: ${it.name}")
         }
 
-        def result = new HtmlRenderer(output).render(root, list, msg)
-        if (msg && !msg.isEmpty()) {
-            println msg
-        }
-        println "output result: ${result}"
+        timer.mark(Logger.W, "output module list")
 
-        new TextRenderer(output).render(root, list, msg)
+        if (extension.output.contains("html")) {
+            def result = new HtmlRenderer(output).render(root, list, msg)
+            if (msg && !msg.isEmpty()) {
+                println msg
+            }
+            Logger.W?.log("Html output: ${result}")
+
+            timer.mark(Logger.W, "output html file")
+        }
+
+        if (extension.output.contains("txt")) {
+            def result = new TextRenderer(output).render(root, list, msg)
+            Logger.W?.log("Txt output: ${result}")
+
+            timer.mark(Logger.W, "output txt file")
+        }
     }
 
     static OutputModuleList outputModuleList(Library root, PackageChecker checker) {

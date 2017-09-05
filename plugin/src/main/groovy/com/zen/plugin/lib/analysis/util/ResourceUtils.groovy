@@ -7,7 +7,7 @@ package com.zen.plugin.lib.analysis.util;
 
 class ResourceUtils {
 
-    static final RESOURCE_PATH  = "/com/zen/plugin/lib/analysis/"
+    static final RESOURCE_PATH = "/com/zen/plugin/lib/analysis/"
     static final RESOURCE_FILES = [
             "css/z/img/",
             "css/demo.css",
@@ -37,10 +37,13 @@ class ResourceUtils {
                 new File(targetPath, it).mkdirs()
                 return
             }
-            def source = obj.getClass().getResourceAsStream("${RESOURCE_PATH}${it}")
+
             def target = new File(targetPath, it)
-            target.withDataOutputStream {
-                os -> os << source
+            if (!target.exists()) {
+                def source = obj.getClass().getResourceAsStream("${RESOURCE_PATH}${it}")
+                target.withDataOutputStream {
+                    os -> os << source
+                }
             }
         }
     }
