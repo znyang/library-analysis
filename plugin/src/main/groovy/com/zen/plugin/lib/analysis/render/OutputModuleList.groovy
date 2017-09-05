@@ -8,24 +8,25 @@ import com.zen.plugin.lib.analysis.util.FileUtils
  * @author znyang 2017/2/13 0013
  */
 
-public class OutputModuleList {
+class OutputModuleList {
 
     List<DependencyOutput> modules = new ArrayList<>()
 
-    public void sortModules() {
-        modules.sort {
-            first, two ->
-                two.sizeValue - first.sizeValue
-        }
+    void sortModules(Closure closure = {
+        first, two ->
+            two.sizeValue - first.sizeValue
+    }) {
+        modules.sort(closure)
+
     }
 
-    public void addModule(DependencyOutput output) {
+    void addModule(DependencyOutput output) {
         if (!modules.contains(output)) {
             modules.add(output)
         }
     }
 
-    public static class DependencyOutput {
+    static class DependencyOutput {
 
         String name
         String size
@@ -33,9 +34,16 @@ public class OutputModuleList {
         String pkgName
         String extInfo
         String level
+        // 被使用次数
+        int useCount
+        // 直接依赖次数
+        int useCountImmediate
+        // 依赖库个数
+        int libCount
         long sizeValue
 
-        DependencyOutput(String name, long size, String pkgName, String type, String extInfo, String level = "") {
+        DependencyOutput(String name, long size, String pkgName, String type, String extInfo,
+                         int libCount = 0, int useCount = 0, int useCountImmediate = 0, String level = "") {
             this.name = name
             this.sizeValue = size
             this.size = FileUtils.convertFileSize(size)
@@ -43,6 +51,9 @@ public class OutputModuleList {
             this.type = type
             this.extInfo = extInfo
             this.level = level
+            this.libCount = libCount
+            this.useCount = useCount
+            this.useCountImmediate = useCountImmediate
         }
 
         boolean equals(o) {

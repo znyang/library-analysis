@@ -9,17 +9,20 @@ import org.gradle.util.ConfigureUtil
 class LibraryAnalysisExtension {
 
     private static final ANALYSIS_OUTPUT_PATH = "reports/zen/analysis/library"
-    private static final SIZE_STYLES          = ['tag-normal', 'tag-warning', 'tag-danger']
-    private static final LAST_INDEX           = SIZE_STYLES.size() - 1
+    private static final SIZE_STYLES = ['tag-normal', 'tag-warning', 'tag-danger']
+    private static final LAST_INDEX = SIZE_STYLES.size() - 1
 
     final Set<String> cacheIgnoreIds = new HashSet<>()
 
-          String          outputPath = ANALYSIS_OUTPUT_PATH
-          List<String>    ignore
+    String outputPath = ANALYSIS_OUTPUT_PATH
+    List<String> ignore
+    List<String> output = ["txt", "html"]
     final LimitSizeConfig limit
-          boolean         showTree   = false
-          boolean         log        = false
-          List<String>    region     = [200 * 1024, 1024 * 1024]
+    boolean showTree = false
+    boolean log = false
+    List<String> region = [200 * 1024, 1024 * 1024]
+    boolean fullTree = false
+    boolean showSize = true
 
     LibraryAnalysisExtension() {
         limit = new LimitSizeConfig()
