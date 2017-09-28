@@ -82,6 +82,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
         extension.ignore?.each {
             rootLib.applyIgnoreLibrary(it)
         }
+
+        timer.mark(Logger.W, "apply ignore")
+
         def root = NodeConvert.convert(rootLib,
                 NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
 
@@ -116,10 +119,17 @@ class DependencyTreeReportTask extends AbstractReportTask {
     static OutputModuleList outputModuleList(Library root, PackageChecker checker) {
         OutputModuleList list = new OutputModuleList()
         root.contains?.each {
+            if (!it.file) {
+                list.addModule(new OutputModuleList.DependencyOutput(it.id, 0, "Not Found File!",
+                        "???", "",
+                        it.contains.size(), it.useCount, it.useCountImmediate, "danger"))
+                return
+            }
             def pkgName = checker.parseModuleName(it.id, it.file.file)
             def isRepeat = checker.isRepeatPackage(pkgName)
             list.addModule(new OutputModuleList.DependencyOutput(it.id, it.file.size, pkgName,
-                    it.file.type, isRepeat ? "package name repeat" : "", it.contains.size(), it.useCount, it.useCountImmediate, isRepeat ? "danger" : ""))
+                    it.file.type, isRepeat ? "package name repeat" : "",
+                    it.contains.size(), it.useCount, it.useCountImmediate, isRepeat ? "danger" : ""))
         }
         list.sortModules()
         list

@@ -82,7 +82,7 @@ class FileDictionary {
             cacheFiles.put(dependencyId, result)
             files.remove(result)
         } else {
-            Logger.D?.log "not found ${dependencyId}"
+            Logger.W?.log "not found ${dependencyId}"
         }
         result
     }
