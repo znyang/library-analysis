@@ -44,7 +44,7 @@ class Library {
         def timer = new Timer()
 
         Map<Object, Library> libraries = new HashMap<>()
-        def libRoot = create(root, dictionary, libraries)
+        def libRoot = create(root, true, dictionary, libraries)
 
         timer.mark(Logger.W, "create libRoot")
 
@@ -101,7 +101,7 @@ class Library {
     }
 
 
-    static Library create(RenderableDependency dependency, FileDictionary dictionary, Map<Object, Library> cache) {
+    static Library create(RenderableDependency dependency, boolean isRoot, FileDictionary dictionary, Map<Object, Library> cache) {
         String id = dependency.id
         String name = dependency.name
 //        Library lib = cache.get(id)
@@ -114,9 +114,9 @@ class Library {
             def result = new Library(name, id)
             cache.put(name, result)
 
-            result.file = dictionary?.findDependencyInfo(id)
+            result.file = isRoot ? null : (dictionary?.findDependencyInfo(id))
             dependency.children.each {
-                result.children.add(create(it, dictionary, cache))
+                result.children.add(create(it, false, dictionary, cache))
             }
             result.computeContains()
             return result

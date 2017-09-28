@@ -37,12 +37,16 @@ class DependencyTreeReportTask extends AbstractReportTask {
     protected void generate(Project project) throws IOException {
         def timer = new Timer()
 
-        outputHtml()
+        try {
+            outputHtml()
 
-        if (extension.showTree) {
-            renderer.startConfiguration(configuration)
-            renderer.render(configuration)
-            renderer.completeConfiguration(configuration)
+            if (extension.showTree) {
+                renderer.startConfiguration(configuration)
+                renderer.render(configuration)
+                renderer.completeConfiguration(configuration)
+            }
+        } catch (Exception e) {
+            Logger.W.log("generate report file failed!!! ERROR: " + e.message)
         }
 
         timer.mark(Logger.W, "${getName()} total")
@@ -67,12 +71,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         // 通过依赖文件创建依赖字典
         def packageChecker = new PackageChecker()
-
-        timer.mark(Logger.W, "create checker")
-
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
-
-        timer.mark(Logger.W, "create dictionary")
 
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
@@ -82,8 +81,6 @@ class DependencyTreeReportTask extends AbstractReportTask {
         extension.ignore?.each {
             rootLib.applyIgnoreLibrary(it)
         }
-
-        timer.mark(Logger.W, "apply ignore")
 
         def root = NodeConvert.convert(rootLib,
                 NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
@@ -120,9 +117,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
         OutputModuleList list = new OutputModuleList()
         root.contains?.each {
             if (!it.file) {
-                list.addModule(new OutputModuleList.DependencyOutput(it.id, 0, "Not Found File!",
-                        "???", "",
-                        it.contains.size(), it.useCount, it.useCountImmediate, "danger"))
+                list.addModule(new OutputModuleList.DependencyOutput(it.id, 0, "",
+                        "pom", "",
+                        it.contains.size(), it.useCount, it.useCountImmediate, ""))
                 return
             }
             def pkgName = checker.parseModuleName(it.id, it.file.file)

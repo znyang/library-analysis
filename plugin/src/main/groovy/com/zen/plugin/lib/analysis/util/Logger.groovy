@@ -14,6 +14,7 @@ class Logger {
     }
 
     void log(def message) {
+        print "LibReport "
         println message
     }
 }
