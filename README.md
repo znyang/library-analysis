@@ -27,7 +27,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.1.9'
+        classpath 'com.github.znyang:library-analysis:0.2'
     }
 }
 
