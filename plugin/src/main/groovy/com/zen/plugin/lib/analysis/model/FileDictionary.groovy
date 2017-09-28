@@ -22,6 +22,7 @@ class FileDictionary {
     final Map<String, FileInfo> cacheInfoMap = new HashMap<>()
     long totalSize = 0L
     long maxSize = 0L
+    long totalFindCount = 0l
 
     FileDictionary(FileCollection fileCollection) {
         this.fileCollection = fileCollection
@@ -58,7 +59,11 @@ class FileDictionary {
         def dependency = dependencyId.split("\\:")
         def size = dependency.size()
         def result = null
-        Logger.D?.log "find start: ${dependencyId}"
+
+//        def sep = "\r\n"
+//        StringBuilder builder = new StringBuilder()
+//        builder.append("find start: ${dependencyId}").append(sep)
+        int count = 0
 
         if (size == 3) {
             def key = dependency.join(SEPARATOR)
@@ -66,23 +71,29 @@ class FileDictionary {
             def keyFull = "${group}${SEPARATOR}${dependency[1]}${SEPARATOR}${dependency[2]}"
 
             result = getFiles().find {
-                Logger.D?.log "find ${it.path} ==? ${key} ==? ${keyFull}"
-                it.path.contains(key) || it.path.contains(keyFull)
+                count++
+//                builder.append("find ${it.path} ==? ${key} ==? ${keyFull}").append(sep)
+                it.path.contains(keyFull) || it.path.contains(key)
             }
         } else if (size == 2) {
             def key = "${BUILD_DIR}${dependency[1]}"
 
             result = getFiles().find {
-                Logger.D?.log "find ${it.path} ==? ${key}"
+                count++
+//                builder.append("find ${it.path} ==? ${key}").append(sep)
                 it.path.contains(key)
             }
         }
+
+        totalFindCount += count
+
         if (result != null) {
-            Logger.D?.log "find result: " + result.path
+//            Logger.W?.log "find result: " + result.path + " tcount:" + totalFindCount
             cacheFiles.put(dependencyId, result)
             files.remove(result)
         } else {
-            Logger.W?.log "not found ${dependencyId}"
+            Logger.W?.log "not found ${dependencyId} jar/aar file."
+//            Logger.W?.log builder.toString()
         }
         result
     }
