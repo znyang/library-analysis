@@ -1,5 +1,7 @@
 package com.zen.plugin.lib.analysis.model
 
+import com.zen.plugin.lib.analysis.util.Logger
+import com.zen.plugin.lib.analysis.util.Timer
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableDependency
 
 /**
@@ -38,16 +40,22 @@ class Library {
         }
     }
 
-    static Library create(RenderableDependency dependency, FileDictionary dictionary) {
-        Map<Object, Library> libraries = new HashMap<>()
-        def lib = create(dependency, dictionary, libraries)
+    static Library create(RenderableDependency root, FileDictionary dictionary) {
+        def timer = new Timer()
 
-        // 合并useCount
-        // TODO: 可优化
+        Map<Object, Library> libraries = new HashMap<>()
+        def libRoot = create(root, dictionary, libraries)
+
+        timer.mark(Logger.W, "create libRoot")
+
+        // 合并useCount TODO: 可优化
         Map<String, Integer> useCounts = new HashMap<>()
+        // 被直接依赖的次数
         Map<String, Integer> useCountImmediacies = new HashMap<>()
 
-        parseLibraryUseCount(lib, useCountImmediacies)
+        parseLibraryUseCount(libRoot, useCountImmediacies)
+
+        timer.mark(Logger.W, "parseLibraryUseCount")
 
         libraries.values().each {
             def id = it.id
@@ -71,7 +79,9 @@ class Library {
             }
         }
 
-        lib
+        timer.mark(Logger.W, "compute libraries")
+
+        libRoot
     }
 
     static void parseLibraryUseCount(Library library, Map<String, Integer> useCounts) {
@@ -145,7 +155,9 @@ class Library {
         long size = file ? file.size : 0
         contains.each {
             if (!it.isIgnoreSize) {
-                size += it.file?.size
+                if (it.file) {
+                    size += it.file.size
+                }
             }
         }
         size
