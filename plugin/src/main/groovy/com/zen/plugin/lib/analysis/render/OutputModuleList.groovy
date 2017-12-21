@@ -30,6 +30,7 @@ class OutputModuleList {
 
         String name
         String size
+        String totalSize
         String type
         String pkgName
         String extInfo
@@ -42,11 +43,12 @@ class OutputModuleList {
         int libCount
         long sizeValue
 
-        DependencyOutput(String name, long size, String pkgName, String type, String extInfo,
+        DependencyOutput(String name, long totalSize, long size, String pkgName, String type, String extInfo,
                          int libCount = 0, int useCount = 0, int useCountImmediate = 0, String level = "") {
             this.name = name
+            this.totalSize = FileUtils.convertFileKbSize(totalSize)
             this.sizeValue = size
-            this.size = FileUtils.convertFileSize(size)
+            this.size = FileUtils.convertFileKbSize(size)
             this.pkgName = pkgName
             this.type = type
             this.extInfo = extInfo

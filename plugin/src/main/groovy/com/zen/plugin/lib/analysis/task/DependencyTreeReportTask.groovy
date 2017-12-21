@@ -127,7 +127,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
             }
             def pkgName = checker.parseModuleName(it.id, it.file.file)
             def isRepeat = checker.isRepeatPackage(pkgName)
-            list.addModule(new OutputModuleList.DependencyOutput(it.id, it.file.size, pkgName,
+            list.addModule(new OutputModuleList.DependencyOutput(it.id, it.getTotalSizeWithoutIgnore(), it.file.size, pkgName,
                     it.file.type, isRepeat ? "package name repeat" : "",
                     it.contains.size(), it.useCount, it.useCountImmediate, isRepeat ? "danger" : ""))
         }
@@ -142,7 +142,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
             key, value ->
                 def pkgName = checker.parseModuleName(key, value.file)
                 def isRepeat = checker.isRepeatPackage(pkgName)
-                list.addModule(new OutputModuleList.DependencyOutput(key, value.size, pkgName,
+                list.addModule(new OutputModuleList.DependencyOutput(key, 0, value.size, pkgName,
                         value.type, isRepeat ? "package name repeat" : "", 0, 0, 0, isRepeat ? "danger" : ""))
         }
         list.sortModules()

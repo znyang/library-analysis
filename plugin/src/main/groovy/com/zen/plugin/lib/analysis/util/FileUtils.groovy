@@ -6,6 +6,13 @@ package com.zen.plugin.lib.analysis.util;
  */
 class FileUtils {
 
+    static String convertFileKbSize(long size) {
+        long kb = 1024
+
+        float f = (float) size / kb;
+        String.format(f > 100 ? "%.0f KB" : "%.3f KB", f)
+    }
+
     static String convertFileSize(long size) {
         long kb = 1024
         long mb = kb * 1024
