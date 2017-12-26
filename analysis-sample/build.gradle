@@ -1,27 +1,22 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.zen.lib.analysis'
-apply from: "${projectDir}/retrolambda.gradle"
 
 buildscript {
     repositories repoProvider
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
-        classpath 'com.github.znyang:library-analysis:0.2-SNAPSHOT'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.3'
-        classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
+        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.github.znyang:library-analysis:0.2'
     }
-    // Exclude the version that the android plugin depends on.
-    configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "com.zen.android.analysis.sample"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
 
@@ -41,20 +36,16 @@ android {
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.android.support:design:24.0.0'
-    compile 'com.android.support:recyclerview-v7:24.0.0'
-    compile 'com.android.support:cardview-v7:24.0.0'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:palette-v7:24.0.0'
-    compile 'com.android.support:palette-v7:24.0.0'
-    compile 'com.android.support:support-vector-drawable:24.0.0'
-
-    compile 'com.android.support:support-v4:24.1.1'
 
     compile 'com.squareup.moshi:moshi:1.2.0'
     compile 'com.alibaba:fastjson:1.1.54.android'

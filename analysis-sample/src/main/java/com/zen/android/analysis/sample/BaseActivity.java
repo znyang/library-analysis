@@ -1,8 +1,8 @@
 package com.zen.android.analysis.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import rx.Observable;
 
@@ -11,7 +11,7 @@ import rx.Observable;
  * @version 2016/9/13
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends Activity {
 
     Observable<?> ready;
 
