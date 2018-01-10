@@ -3,7 +3,7 @@ allprojects {
         isEnvCi = System.getenv('ENV_CI')
         buildToolsVersion = isEnvCi ? "22.0.1" : "25.0.0"
         repoProvider = {
-//            maven { url "file:///c:/repo"}
+            maven { url "file:///c:/repo"}
             maven {
                 url 'http://maven.aliyun.com/nexus/content/groups/public/'
             }

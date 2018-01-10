@@ -5,6 +5,7 @@ import com.zen.plugin.lib.analysis.task.DependencyTreeReportTask
 import com.zen.plugin.lib.analysis.util.Logger
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 
 /**
  * 1. 白名单
@@ -31,7 +32,7 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
         def configurations = project.configurations
 
         configurations.findAll {
-            return !it.allDependencies.isEmpty()
+            return !it.allDependencies.isEmpty() && getConfigurationSize(it) > 0
         }.each {
             def conf = it.getName()
             def task = project.tasks.create(genTaskName(conf), DependencyTreeReportTask)
@@ -52,5 +53,14 @@ class LibraryAnalysisPlugin implements Plugin<Project> {
         } else {
             "${TASK_PREFIX}${name}"
         }
+    }
+
+    static int getConfigurationSize(Configuration conf) {
+        try {
+            return conf.incoming.resolutionResult.allDependencies.size()
+        } catch (Exception e) {
+            // ignore
+        }
+        0
     }
 }
