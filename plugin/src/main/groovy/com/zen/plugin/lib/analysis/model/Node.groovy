@@ -2,6 +2,8 @@ package com.zen.plugin.lib.analysis.model
 /**
  * Node
  *
+ * 依赖节点的输出模型
+ *
  * @author yangz
  * @version 2016/7/8
  */
