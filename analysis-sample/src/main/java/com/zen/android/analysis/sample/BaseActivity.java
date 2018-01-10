@@ -1,17 +1,20 @@
 package com.zen.android.analysis.sample;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 
 import rx.Observable;
+import rx.Observable.OnSubscribe;
+import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * @author zen
  * @version 2016/9/13
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends Activity {
 
     Observable<?> ready;
 
@@ -35,9 +38,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (ready == null) {
             ready = InitManager
                     .ready()
-                    .map(result -> {
-                        afterCreate(state);
-                        return result;
+                    .map(new Func1<Object, Object>() {
+                        @Override
+                        public Object call(Object result) {
+                            afterCreate(state);
+                            return result;
+                        }
                     });
         }
     }
@@ -68,10 +74,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected Observable<?> genObsResume() {
-        return Observable.create(subscriber -> {
-            onObsResume();
-            subscriber.onNext(null);
-            subscriber.onCompleted();
+        return Observable.create(new OnSubscribe<Object>() {
+            @Override
+            public void call(Subscriber<? super Object> subscriber) {
+                BaseActivity.this.onObsResume();
+                subscriber.onNext(null);
+                subscriber.onCompleted();
+            }
         });
     }
 

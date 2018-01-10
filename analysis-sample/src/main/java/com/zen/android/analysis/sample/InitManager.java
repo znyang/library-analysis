@@ -6,6 +6,7 @@ import android.os.SystemClock;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 /**
@@ -34,9 +35,12 @@ public class InitManager {
 
     public static Observable<?> ready() {
         return Observable.defer(
-                () -> {
-                    init(sCache);
-                    return Observable.just(true);
+                new Func0<Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call() {
+                        init(sCache);
+                        return Observable.just(true);
+                    }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -1,0 +1,5 @@
+<resources>
+  <string name="app_name">AnalysisSample</string>
+  <string name="success">Success</string>
+  <string name="fail">Fail!</string>
+</resources>

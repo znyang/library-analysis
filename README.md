@@ -27,7 +27,7 @@ buildscript {
         maven { url "https://jitpack.io" }
     }
     dependencies {
-        classpath 'com.github.znyang:library-analysis:0.2'
+        classpath 'com.github.znyang:library-analysis:0.2.1'
     }
 }
 
@@ -46,8 +46,10 @@ libReport {
 ## 使用
 
 ```
-gradle libReportCompile
+gradle libReportCompile // or libReportReleaseCompileClasspath ...
 ```
+
+注意：在使用gradle 4.x以后，建议使用libReportReleaseCompileClasspath输出（libReportCompile无法输出使用implementation加入的相关依赖库），如果工程都只用compile添加依赖，那么没有影响。
 
 ### output
 

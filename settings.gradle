@@ -1,4 +1,7 @@
-//include ':analysis-sample'
+if(VERSION_NAME.endsWith("-SNAPSHOT")){
+    include ':analysis-sample'
+    include ':kotlin-sample'
+}
 // Sets the output JAR filename
 rootProject.name = 'library-analysis-gradle-plugin'
 include 'plugin'

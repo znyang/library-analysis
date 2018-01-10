@@ -3,21 +3,33 @@ allprojects {
         isEnvCi = System.getenv('ENV_CI')
         buildToolsVersion = isEnvCi ? "22.0.1" : "25.0.0"
         repoProvider = {
-//            maven { url "file:///c:/repo"}
-//            maven {
-//                url 'http://maven.aliyun.com/nexus/content/groups/public/'
-//            }
+            if (!isEnvCi) {
+                maven { url "file:///c:/repo" }
+                maven {
+                    url 'http://maven.aliyun.com/nexus/content/groups/public/'
+                }
+            }
+            google()
             jcenter()
             maven { url "https://jitpack.io" }
         }
     }
 
     repositories repoProvider
+
+    buildscript {
+        repositories repoProvider
+        dependencies {
+            classpath 'com.android.tools.build:gradle:3.0.0'
+            classpath 'com.github.znyang:library-analysis:0.2'
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.1'
-    distributionUrl = 'http://services.gradle.org/distributions/gradle-3.1-all.zip'
+    gradleVersion = '4.1'
+    distributionUrl = 'http://services.gradle.org/distributions/gradle-4.1-all.zip'
 }
 
 task clean(type: Delete) {

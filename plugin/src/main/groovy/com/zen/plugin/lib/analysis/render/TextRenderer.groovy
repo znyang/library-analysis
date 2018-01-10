@@ -79,7 +79,8 @@ class TextRenderer {
     static void showAllModules(StringBuilder builder, OutputModuleList list) {
         builder.append("\r\n")
         list.modules.each {
-            builder.append('compile \'').append(it.name).append('@').append(it.type).append('\'').append("\r\n")
+            builder.append(it.type).append('\t').append(it.name).append("\r\n")
+//            builder.append('compile \'').append(it.name).append('@').append(it.type).append('\'').append("\r\n")
         }
     }
 
