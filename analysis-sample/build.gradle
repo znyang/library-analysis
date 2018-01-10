@@ -1,20 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.zen.lib.analysis'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-
-buildscript {
-    repositories repoProvider
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
-        classpath 'com.github.znyang:library-analysis:0.2-SNAPSHOT'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
-    }
-}
+//apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "com.zen.android.analysis.sample"
@@ -31,10 +21,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    dexOptions {
-        dexInProcess false
     }
     lintOptions {
         abortOnError false

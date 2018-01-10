@@ -14,6 +14,15 @@ allprojects {
     }
 
     repositories repoProvider
+
+    buildscript {
+        repositories repoProvider
+        dependencies {
+            classpath 'com.android.tools.build:gradle:3.0.0'
+            classpath 'com.github.znyang:library-analysis:0.2'
+            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.51"
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
