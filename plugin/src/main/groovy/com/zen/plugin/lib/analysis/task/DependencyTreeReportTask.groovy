@@ -18,6 +18,9 @@ import org.gradle.api.tasks.diagnostics.internal.ReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleResult
 
+import java.util.regex.Pattern
+import java.util.zip.ZipFile
+
 /**
  * @author zen
  * @version 2016/9/9
@@ -95,6 +98,10 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         timer.mark(Logger.W, "output module list")
 
+        printFiles(rootLib, output)
+
+        timer.mark(Logger.W, "output file_info")
+
         if (extension.output.contains("html")) {
             def result = new HtmlRenderer(output).render(root, list, msg)
             if (msg && !msg.isEmpty()) {
@@ -111,6 +118,80 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
             timer.mark(Logger.W, "output txt file")
         }
+    }
+
+    static final String[] IGNORES = [
+            "classes.jar", "R.txt", "AndroidManifest.xml", "annotations.zip", "META-INF/MANIFEST.MF",
+            "proguard.txt", "aapt/AndroidManifest.xml"
+    ]
+
+    static final Pattern IGNORE_REGEX = Pattern.compile("res/values([^/]*)/([^.]+).xml")
+
+    static class RepeatFileInfo {
+        String id
+        long fileSize
+
+        RepeatFileInfo(String id, long fileSize) {
+            this.id = id
+            this.fileSize = fileSize
+        }
+    }
+
+    static void printFiles(Library root, String output) {
+        Map<String, Set<RepeatFileInfo>> fileMap = new HashMap<>()
+        List<String> repeatFiles = new ArrayList<>()
+
+        root.contains?.each {
+            lib ->
+                def aar = lib.file.file
+                if (aar == null || !aar.exists()) {
+                    return
+                }
+
+                def path = aar.absolutePath
+                ZipFile zipFile = new ZipFile(path)
+                zipFile.entries().each {
+                    entry ->
+                        if (entry.isDirectory()) {
+                            return
+                        }
+                        if (IGNORES.contains(entry.name)
+                                || IGNORE_REGEX.matcher(entry.name).find()) {
+                            return
+                        }
+
+                        Set<RepeatFileInfo> collect = fileMap.get(entry.name)
+                        if (collect == null) {
+                            collect = new HashSet<>()
+                            fileMap.put(entry.name, collect)
+                        } else if (!repeatFiles.contains(entry.name)) {
+                            repeatFiles.add(entry.name)
+                        }
+                        collect.add(new RepeatFileInfo(lib.id, entry.size))
+                }
+        }
+
+        repeatFiles.sort(new Comparator<String>() {
+            @Override
+            int compare(String s, String t1) {
+                return s <=> t1
+            }
+        })
+
+        StringBuilder builder = new StringBuilder()
+        repeatFiles.each {
+            Set<RepeatFileInfo> fileInfos = fileMap.get(it)
+            if (fileInfos != null) {
+                builder.append(it).append("\r\n")
+                fileInfos.each {
+                    info ->
+                        builder.append("\t").append(info.fileSize).append("\t").append(info.id).append("\r\n")
+                }
+            } else {
+                builder.append("WARN: Not found librarys for ${it}. Is it a repeat file? \r\n")
+            }
+        }
+        new File(output, "repeat_files.txt").setText(builder.toString(), "UTF-8")
     }
 
     static OutputModuleList outputModuleList(Library root, PackageChecker checker) {
