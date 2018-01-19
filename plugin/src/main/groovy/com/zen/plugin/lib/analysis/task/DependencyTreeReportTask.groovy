@@ -1,5 +1,6 @@
 package com.zen.plugin.lib.analysis.task
 
+import com.zen.plugin.lib.analysis.checker.ModuleParser
 import com.zen.plugin.lib.analysis.convert.NodeConvert
 import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.model.FileDictionary
@@ -7,6 +8,9 @@ import com.zen.plugin.lib.analysis.model.Library
 import com.zen.plugin.lib.analysis.render.HtmlRenderer
 import com.zen.plugin.lib.analysis.render.OutputModuleList
 import com.zen.plugin.lib.analysis.render.TextRenderer
+import com.zen.plugin.lib.analysis.checker.ErrorChecker
+import com.zen.plugin.lib.analysis.checker.DuplicateFilesChecker
+import com.zen.plugin.lib.analysis.checker.DuplicateModuleNameChecker
 import com.zen.plugin.lib.analysis.util.Logger
 import com.zen.plugin.lib.analysis.util.PackageChecker
 import com.zen.plugin.lib.analysis.util.ResourceUtils
@@ -18,7 +22,6 @@ import org.gradle.api.tasks.diagnostics.internal.ReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.graph.nodes.RenderableModuleResult
 
-import java.util.regex.Pattern
 import java.util.zip.ZipFile
 
 /**
@@ -68,12 +71,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         timer.mark(Logger.W, "get dependencies")
 
-//        def root = Node.create(dep)
-
-//        timer.mark(Logger.W, "create nodes")
-
         // 通过依赖文件创建依赖字典
-        def packageChecker = new PackageChecker()
         def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
 
 //        root.supplyInfo(extension, dictionary, packageChecker)
@@ -86,115 +84,75 @@ class DependencyTreeReportTask extends AbstractReportTask {
         }
 
         def root = NodeConvert.convert(rootLib,
-                NodeConvert.Args.get(dictionary).extension(extension).checker(packageChecker).brief(!extension.fullTree))
+                NodeConvert.Args.get(dictionary).extension(extension).brief(!extension.fullTree))
 
         timer.mark(Logger.W, "create root node")
 
-        def msg = packageChecker.outputPackageRepeatList()
-        def list = outputModuleList(rootLib, packageChecker)
+        DuplicateModuleNameChecker moduleNameChecker = new DuplicateModuleNameChecker()
+        outputErrorReport(rootLib, output, moduleNameChecker, new DuplicateFilesChecker())
+
+        timer.mark(Logger.W, "output error reports")
+
+        def list = outputModuleList(rootLib, moduleNameChecker)
         list.modules.each {
             Logger.D?.log("module: ${it.name}")
         }
 
         timer.mark(Logger.W, "output module list")
 
-        printFiles(rootLib, output)
-
-        timer.mark(Logger.W, "output file_info")
-
         if (extension.output.contains("html")) {
-            def result = new HtmlRenderer(output).render(root, list, msg)
-            if (msg && !msg.isEmpty()) {
-                println msg
-            }
-            Logger.W?.log("Html output: ${result}")
+            def result = new HtmlRenderer(output).render(root, list, null)
 
+            Logger.W?.log("Html output: ${result}")
             timer.mark(Logger.W, "output html file")
         }
 
         if (extension.output.contains("txt")) {
-            def result = new TextRenderer(output).render(root, list, msg)
+            def result = new TextRenderer(output).render(root, list, null)
             Logger.W?.log("Txt output: ${result}")
 
             timer.mark(Logger.W, "output txt file")
         }
     }
 
-    static final String[] IGNORES = [
-            "classes.jar", "R.txt", "AndroidManifest.xml", "annotations.zip", "META-INF/MANIFEST.MF",
-            "proguard.txt", "aapt/AndroidManifest.xml"
-    ]
-
-    static final Pattern IGNORE_REGEX = Pattern.compile("res/values([^/]*)/([^.]+).xml")
-
-    static class RepeatFileInfo {
-        String id
-        long fileSize
-
-        RepeatFileInfo(String id, long fileSize) {
-            this.id = id
-            this.fileSize = fileSize
-        }
-    }
-
-    static void printFiles(Library root, String output) {
-        Map<String, Set<RepeatFileInfo>> fileMap = new HashMap<>()
-        List<String> repeatFiles = new ArrayList<>()
-
+    static void outputErrorReport(Library root, String output, ErrorChecker... checkers) {
+        Set<ErrorChecker> filterCheckers = new HashSet<>()
         root.contains?.each {
             lib ->
-                def aar = lib.file.file
-                if (aar == null || !aar.exists()) {
+                def zip = lib.file.file
+                if (zip == null || !zip.exists()) {
                     return
                 }
 
-                def path = aar.absolutePath
+                // 筛选需要激活的检查器
+                filterCheckers.clear()
+                checkers.each {
+                    checker ->
+                        if (checker.isTarget(lib, zip)) {
+                            filterCheckers.add(checker)
+                        }
+                }
+
+                def path = zip.absolutePath
                 ZipFile zipFile = new ZipFile(path)
+                // 对所有文件执行检查
                 zipFile.entries().each {
                     entry ->
-                        if (entry.isDirectory()) {
-                            return
+                        filterCheckers.each {
+                            checker ->
+                                checker.onAnalysisFile(lib, zipFile, entry)
                         }
-                        if (IGNORES.contains(entry.name)
-                                || IGNORE_REGEX.matcher(entry.name).find()) {
-                            return
-                        }
-
-                        Set<RepeatFileInfo> collect = fileMap.get(entry.name)
-                        if (collect == null) {
-                            collect = new HashSet<>()
-                            fileMap.put(entry.name, collect)
-                        } else if (!repeatFiles.contains(entry.name)) {
-                            repeatFiles.add(entry.name)
-                        }
-                        collect.add(new RepeatFileInfo(lib.id, entry.size))
                 }
         }
-
-        repeatFiles.sort(new Comparator<String>() {
-            @Override
-            int compare(String s, String t1) {
-                return s <=> t1
-            }
-        })
 
         StringBuilder builder = new StringBuilder()
-        repeatFiles.each {
-            Set<RepeatFileInfo> fileInfos = fileMap.get(it)
-            if (fileInfos != null) {
-                builder.append(it).append("\r\n")
-                fileInfos.each {
-                    info ->
-                        builder.append("\t").append(info.fileSize).append("\t").append(info.id).append("\r\n")
-                }
-            } else {
-                builder.append("WARN: Not found librarys for ${it}. Is it a repeat file? \r\n")
-            }
+        checkers.each {
+            builder.append(it.outputReport()).append("\r\n")
         }
-        new File(output, "repeat_files.txt").setText(builder.toString(), "UTF-8")
+        new File(output, "LibReports.md").setText(builder.toString(), "UTF-8")
     }
 
-    static OutputModuleList outputModuleList(Library root, PackageChecker checker) {
+    static OutputModuleList outputModuleList(Library root, ModuleParser checker) {
         OutputModuleList list = new OutputModuleList()
         root.contains?.each {
             if (!it.file) {
