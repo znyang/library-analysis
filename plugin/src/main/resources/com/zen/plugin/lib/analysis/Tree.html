@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/z/ztree.css" type="text/css">
     <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-    <script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript" src="js/jquery.ztree.core.min.js"></script>
     <SCRIPT LANGUAGE="JavaScript">
    var zTreeObj;
@@ -29,13 +29,16 @@
 </HEAD>
 <BODY>
 
-<h5 class="text-right">Generate by <a type="button" class="btn btn-link" href="https://github.com/znyang/library-analysis">Library Analysis Gradle Plugin</a></h5>
-
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
 
     </div>
-    <div class="col-md-8">
+    <div class="col-md-10">
+        <h2>
+            Support By Library Analysis
+        </h2>
+        %output_support%
+
         <h3>Module List</h3>
         <p style="color:#f00;">%output_msg%</p>
         <table class="col-md-8 table">
@@ -66,10 +69,10 @@
 </div>
 
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
 
     </div>
-    <div class="col-md-8">
+    <div class="col-md-10">
         <h3 >Dependencies Tree</h3>
         <p class="ztree">注：为节省数据量，含有子节点的库若已经出现过了，就不再显示其子节点。</p>
         <ul id="dep" class="ztree"></ul>
@@ -89,6 +92,8 @@
     )
     ;
 </script>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
 
 </BODY>
 </HTML>

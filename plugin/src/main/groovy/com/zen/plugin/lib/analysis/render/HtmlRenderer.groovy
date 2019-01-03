@@ -1,6 +1,7 @@
 package com.zen.plugin.lib.analysis.render
 
 import com.google.gson.Gson
+import com.zen.plugin.lib.analysis.ext.LibraryAnalysisExtension
 import com.zen.plugin.lib.analysis.model.Node
 import com.zen.plugin.lib.analysis.util.ResourceUtils
 import groovy.json.JsonOutput
@@ -20,7 +21,7 @@ class HtmlRenderer {
         this.targetDir = target
     }
 
-    public String render(Node root, OutputModuleList list, String msg) {
+    public String render(Node root, OutputModuleList list, String msg, LibraryAnalysisExtension ext) {
         String json = root ? "[${GSON.toJson(root)}]" : '[]'
         if (msg && msg.length() > 0) {
             msg = msg.replace("\r\n", "<br>")
@@ -29,9 +30,11 @@ class HtmlRenderer {
         }
 
         def modules = JsonOutput.toJson(list)
-
         def target = new File(targetDir, "Tree.html")
+        def support = ext.showSupport ? ResourceUtils.getTemplateFileContent("support.html") : ""
+
         def html = ResourceUtils.getTemplateFileContent("Tree.html")
+                .replace("%output_support%", support)
                 .replace("%output_msg%", msg)
                 .replace("%data%", modules)
                 .replace("%title%", root.id)

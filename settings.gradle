@@ -1,5 +1,5 @@
 if(VERSION_NAME.endsWith("-SNAPSHOT")){
-    include ':analysis-sample'
+    include ':analysis-sample', ':module-library'
     include ':kotlin-sample'
 }
 // Sets the output JAR filename
