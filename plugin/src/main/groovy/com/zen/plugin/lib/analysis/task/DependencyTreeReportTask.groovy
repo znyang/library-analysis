@@ -13,6 +13,7 @@ import com.zen.plugin.lib.analysis.util.ResourceUtils
 import com.zen.plugin.lib.analysis.util.Timer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.internal.artifacts.dependencies.DefaultProjectDependency
 import org.gradle.api.tasks.diagnostics.AbstractReportTask
 import org.gradle.api.tasks.diagnostics.internal.ReportRenderer
 import org.gradle.api.tasks.diagnostics.internal.dependencies.AsciiDependencyReportRenderer
@@ -47,6 +48,9 @@ class DependencyTreeReportTask extends AbstractReportTask {
             }
         } catch (Exception e) {
             Logger.W.log("generate report file failed!!! ERROR: " + e.message)
+            if (extension.log) {
+                e.printStackTrace()
+            }
         }
 
         timer.mark(Logger.W, "${getName()} total")
@@ -71,7 +75,12 @@ class DependencyTreeReportTask extends AbstractReportTask {
 
         // 通过依赖文件创建依赖字典
         def packageChecker = new PackageChecker()
-        def dictionary = new FileDictionary(configuration.getIncoming().getFiles())
+
+//        def fs = configuration.getIncoming().getFiles()
+        def fs = configuration.fileCollection {
+            !(it instanceof DefaultProjectDependency)
+        }
+        def dictionary = new FileDictionary(fs)
 
 //        root.supplyInfo(extension, dictionary, packageChecker)
         def rootLib = Library.create(dep, dictionary)
@@ -96,7 +105,7 @@ class DependencyTreeReportTask extends AbstractReportTask {
         timer.mark(Logger.W, "output module list")
 
         if (extension.output.contains("html")) {
-            def result = new HtmlRenderer(output).render(root, list, msg)
+            def result = new HtmlRenderer(output).render(root, list, msg, extension)
             if (msg && !msg.isEmpty()) {
                 println msg
             }

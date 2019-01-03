@@ -21,7 +21,7 @@ class ResourceUtils {
 
             "js/",
             "js/jquery.ztree.core.min.js",
-            "js/jquery-1.4.4.min.js",
+            "js/jquery.min.js",
             "js/cytoscape-dagre.js",
             "js/dagre.min.js"
     ]
