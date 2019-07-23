@@ -58,7 +58,7 @@ gradle libReportCompile // or libReportReleaseCompileClasspath ...
 
 ![screenshot](./image/module-list.png)
 
-![screenshot](./image/tree.png)
+![screenshot](./image/tree-x.png)
 
 **/build/reports/zen/analysis/library/compile/Tree.txt**
 
